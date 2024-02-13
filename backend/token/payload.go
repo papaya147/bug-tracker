@@ -9,9 +9,10 @@ import (
 type TokenType string
 
 const (
-	AccessToken  TokenType = "access"
-	EmailToken   TokenType = "email"
-	InvalidToken TokenType = "invalid"
+	AccessToken   TokenType = "access"
+	EmailToken    TokenType = "email"
+	PasswordToken TokenType = "password"
+	InvalidToken  TokenType = "invalid"
 )
 
 func (t TokenType) String() string {
