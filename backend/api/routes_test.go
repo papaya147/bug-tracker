@@ -7,7 +7,7 @@ import (
 )
 
 func TestRoutes(t *testing.T) {
-	testRoutes := testApp.router
+	router := testApp.router
 	apiVersion := 1
 
 	apiRoutes := []test.Route{
@@ -18,6 +18,6 @@ func TestRoutes(t *testing.T) {
 	}
 
 	for _, apiRoute := range apiRoutes {
-		test.RouteExists(t, testRoutes, apiVersion, apiRoute)
+		test.RouteExists(t, router, apiVersion, apiRoute)
 	}
 }
