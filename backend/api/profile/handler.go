@@ -27,6 +27,7 @@ func (handler *Handler) Routes() *chi.Mux {
 	router.Post("/", handler.create)
 	router.Get("/verify", handler.verify)
 	router.Post("/login", handler.login)
+	router.Get("/password/forgot", handler.forgotPassword)
 
 	router.Group(func(r chi.Router) {
 		r.Use(token.Middleware(handler.tokenMaker, handler.store))
