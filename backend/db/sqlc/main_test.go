@@ -14,7 +14,6 @@ var testQueries *Queries
 
 func TestMain(m *testing.M) {
 	config := config.NewConfig("../../")
-	log.Println(config.POSTGRES_DSN)
 
 	conn, err := pgxpool.New(context.Background(), config.POSTGRES_DSN)
 	if err != nil {

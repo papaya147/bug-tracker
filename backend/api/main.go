@@ -28,7 +28,7 @@ func NewServer(store db.Store, maker token.Maker) *server {
 		tokenMaker: maker,
 	}
 
-	server.profileHandler = profile.NewHandler(store, config, maker)
+	server.profileHandler = profile.NewHandler(config, store, maker)
 	server.router = server.routes()
 
 	return server

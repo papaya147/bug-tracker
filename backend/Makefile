@@ -21,4 +21,4 @@ clean_run:
 	make migrateup
 	go run main.go
 
-.PHONY: postgres createdb dropdb
+.PHONY: test postgres createdb dropdb

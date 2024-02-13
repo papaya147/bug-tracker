@@ -8,12 +8,12 @@ import (
 )
 
 type Handler struct {
-	store      db.Store
 	config     *config.Config
+	store      db.Store
 	tokenMaker token.Maker
 }
 
-func NewHandler(store db.Store, config *config.Config, maker token.Maker) *Handler {
+func NewHandler(config *config.Config, store db.Store, maker token.Maker) *Handler {
 	return &Handler{
 		store:      store,
 		config:     config,
