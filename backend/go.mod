@@ -3,6 +3,7 @@ module github.com/papaya147/buggy/backend
 go 1.20
 
 require (
+	aidanwoods.dev/go-paseto v1.5.1
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/render v1.0.3
@@ -15,7 +16,6 @@ require (
 )
 
 require (
-	aidanwoods.dev/go-paseto v1.5.1 // indirect
 	aidanwoods.dev/go-result v0.1.0 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
