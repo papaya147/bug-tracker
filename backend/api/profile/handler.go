@@ -31,6 +31,7 @@ func (handler *Handler) Routes() *chi.Mux {
 	router.Group(func(r chi.Router) {
 		r.Use(token.Middleware(handler.tokenMaker, handler.store))
 		r.Get("/", handler.get)
+		r.Post("/password/change", handler.changePassword)
 	})
 
 	return router

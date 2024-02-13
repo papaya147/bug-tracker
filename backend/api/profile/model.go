@@ -22,3 +22,8 @@ type profileResponse struct {
 	UpdatedAt int64     `json:"updated_at"`
 	Token     string    `json:"token,omitempty"`
 }
+
+type changePasswordRequest struct {
+	OldPassword string `json:"old_password" validate:"required"`
+	NewPassword string `json:"new_password" validate:"required,min=8,max=32"`
+}

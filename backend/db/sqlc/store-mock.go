@@ -20,7 +20,9 @@ func (*mockStore) CreateProfile(ctx context.Context, arg CreateProfileParams) (P
 
 // GetProfile implements Store.
 func (*mockStore) GetProfile(ctx context.Context, id uuid.UUID) (Profile, error) {
-	return Profile{}, nil
+	return Profile{
+		Password: "$2a$12$e.LqnwKjKFqzh8PVqz7r8..qtaFNBLtQbsYuEVrtObMwFlwNYLe3y",
+	}, nil
 }
 
 // GetProfileByEmail implements Store.
