@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/render"
 )
 
-func (app *Server) routes() *chi.Mux {
+func (app *server) routes() *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(
 		render.SetContentType(render.ContentTypeJSON),

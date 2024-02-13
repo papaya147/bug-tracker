@@ -7,13 +7,13 @@ import (
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/papaya147/bug-tracker/backend/config"
+	"github.com/papaya147/buggy/backend/config"
 )
 
 var testQueries *Queries
 
 func TestMain(m *testing.M) {
-	config := config.NewConfig()
+	config := config.NewConfig("../../")
 	log.Println(config.POSTGRES_DSN)
 
 	conn, err := pgxpool.New(context.Background(), config.POSTGRES_DSN)
