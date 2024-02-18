@@ -12,6 +12,7 @@ type Store interface {
 	Querier
 	CreateOrganisationTransferTx(ctx context.Context, arg CreateOrganisationTransferTxParams) (Organisationtransfer, error)
 	GetOrganisationTransfersTx(ctx context.Context, arg uuid.UUID) (GetOrganisationTransfersTxResponse, error)
+	CompleteOrganisationTransferTx(ctx context.Context, arg CompleteOrganisationTransferTxParams) (Organisation, error)
 }
 
 type sqlStore struct {

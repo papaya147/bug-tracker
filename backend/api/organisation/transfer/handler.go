@@ -24,6 +24,7 @@ func (handler *Handler) Routes() *chi.Mux {
 	router.Post("/", handler.create)
 	router.Get("/", handler.get)
 	router.Delete("/{organisation-transfer-id}", handler.delete)
+	router.Get("/response/{organisation-transfer-id}", handler.response)
 
 	return router
 }

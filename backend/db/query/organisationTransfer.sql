@@ -26,6 +26,11 @@ WHERE fromProfile = $1
 -- name: DeleteOrganisationTransfer :one
 DELETE FROM organisationTransfer
 WHERE id = $1
-    AND fromProfile = $2
     AND completed = false
+RETURNING *;
+-- name: CompleteOrganisationTransfer :one
+UPDATE organisationTransfer
+SET completed = true
+WHERE id = $1
+    AND toProfile = $2
 RETURNING *;

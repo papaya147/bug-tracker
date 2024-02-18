@@ -18,3 +18,8 @@ type transferResponse struct {
 type transferId struct {
 	Id string `validate:"required,uuid"`
 }
+
+type transferResponseStatus struct {
+	Id     string `validate:"required,uuid"`
+	Status string `validate:"required,oneof=true false"`
+}

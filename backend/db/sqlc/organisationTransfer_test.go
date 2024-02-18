@@ -50,12 +50,9 @@ func TestGetActiveOrganisationTransfer(t *testing.T) {
 }
 
 func TestDeleteOrganisationTransfer(t *testing.T) {
-	org, _, transfer1 := createRandomOrganisationTransfer(t)
+	_, _, transfer1 := createRandomOrganisationTransfer(t)
 
-	arg := DeleteOrganisationTransferParams{
-		ID:          transfer1.ID,
-		Fromprofile: org.Owner,
-	}
+	arg := transfer1.ID
 
 	transfer2, err := testQueries.DeleteOrganisationTransfer(context.Background(), arg)
 	require.NoError(t, err)
@@ -65,4 +62,24 @@ func TestDeleteOrganisationTransfer(t *testing.T) {
 	require.Equal(t, transfer1.Organisation, transfer2.Organisation)
 	require.Equal(t, transfer1.Fromprofile, transfer2.Fromprofile)
 	require.Equal(t, transfer1.Toprofile, transfer2.Toprofile)
+}
+
+func TestCompleteOrganisationTransfer(t *testing.T) {
+	_, toProfile, transfer1 := createRandomOrganisationTransfer(t)
+
+	arg := CompleteOrganisationTransferParams{
+		ID:        transfer1.ID,
+		Toprofile: toProfile.ID,
+	}
+
+	transfer2, err := testQueries.CompleteOrganisationTransfer(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, transfer2)
+
+	require.Equal(t, transfer1.ID, transfer2.ID)
+	require.Equal(t, transfer1.Organisation, transfer2.Organisation)
+	require.Equal(t, transfer1.Fromprofile, transfer2.Fromprofile)
+	require.Equal(t, transfer1.Toprofile, transfer2.Toprofile)
+	require.Equal(t, transfer1.Createdat, transfer2.Createdat)
+	require.NotZero(t, transfer2.Completed)
 }

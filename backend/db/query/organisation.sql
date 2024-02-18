@@ -14,3 +14,9 @@ SET name = $1,
     updatedAt = now()
 WHERE owner = $3
 RETURNING *;
+-- name: UpdateOrganisationOwner :one
+UPDATE organisation
+SET owner = $1,
+    updatedAt = now()
+WHERE id = $2
+RETURNING *;

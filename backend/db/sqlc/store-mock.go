@@ -9,8 +9,23 @@ import (
 type mockStore struct {
 }
 
+// CompleteOrganisationTransferTx implements Store.
+func (*mockStore) CompleteOrganisationTransferTx(ctx context.Context, arg CompleteOrganisationTransferTxParams) (Organisation, error) {
+	return Organisation{}, nil
+}
+
+// UpdateOrganisationOwner implements Store.
+func (*mockStore) UpdateOrganisationOwner(ctx context.Context, arg UpdateOrganisationOwnerParams) (Organisation, error) {
+	return Organisation{}, nil
+}
+
+// CompleteOrganisationTransfer implements Store.
+func (*mockStore) CompleteOrganisationTransfer(ctx context.Context, arg CompleteOrganisationTransferParams) (Organisationtransfer, error) {
+	return Organisationtransfer{}, nil
+}
+
 // DeleteOrganisationTransfer implements Store.
-func (*mockStore) DeleteOrganisationTransfer(ctx context.Context, arg DeleteOrganisationTransferParams) (Organisationtransfer, error) {
+func (*mockStore) DeleteOrganisationTransfer(ctx context.Context, arg uuid.UUID) (Organisationtransfer, error) {
 	return Organisationtransfer{}, nil
 }
 

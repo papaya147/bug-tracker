@@ -6,7 +6,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	db "github.com/papaya147/buggy/backend/db/sqlc"
 	"github.com/papaya147/buggy/backend/token"
 	"github.com/papaya147/buggy/backend/util"
 )
@@ -27,10 +26,17 @@ func (handler *Handler) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	transfer, err := handler.store.DeleteOrganisationTransfer(r.Context(), db.DeleteOrganisationTransferParams{
-		ID:          uuid.MustParse(requestPayload.Id),
-		Fromprofile: payload.UserId,
-	})
+	_, err = handler.store.GetOrganisation(r.Context(), payload.UserId)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			util.ErrorJson(w, util.ErrEntityDoesNotExist)
+			return
+		}
+		util.ErrorJson(w, util.ErrDatabase)
+		return
+	}
+
+	transfer, err := handler.store.DeleteOrganisationTransfer(r.Context(), uuid.MustParse(requestPayload.Id))
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			util.ErrorJson(w, util.ErrEntityDoesNotExist)

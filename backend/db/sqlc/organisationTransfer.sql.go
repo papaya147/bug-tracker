@@ -12,6 +12,33 @@ import (
 	"github.com/google/uuid"
 )
 
+const completeOrganisationTransfer = `-- name: CompleteOrganisationTransfer :one
+UPDATE organisationTransfer
+SET completed = true
+WHERE id = $1
+    AND toProfile = $2
+RETURNING id, organisation, fromprofile, toprofile, completed, createdat
+`
+
+type CompleteOrganisationTransferParams struct {
+	ID        uuid.UUID `json:"id"`
+	Toprofile uuid.UUID `json:"toprofile"`
+}
+
+func (q *Queries) CompleteOrganisationTransfer(ctx context.Context, arg CompleteOrganisationTransferParams) (Organisationtransfer, error) {
+	row := q.db.QueryRow(ctx, completeOrganisationTransfer, arg.ID, arg.Toprofile)
+	var i Organisationtransfer
+	err := row.Scan(
+		&i.ID,
+		&i.Organisation,
+		&i.Fromprofile,
+		&i.Toprofile,
+		&i.Completed,
+		&i.Createdat,
+	)
+	return i, err
+}
+
 const createOrganisationTransfer = `-- name: CreateOrganisationTransfer :one
 INSERT INTO organisationTransfer (id, organisation, fromProfile, toProfile)
 VALUES ($1, $2, $3, $4)
@@ -47,18 +74,12 @@ func (q *Queries) CreateOrganisationTransfer(ctx context.Context, arg CreateOrga
 const deleteOrganisationTransfer = `-- name: DeleteOrganisationTransfer :one
 DELETE FROM organisationTransfer
 WHERE id = $1
-    AND fromProfile = $2
     AND completed = false
 RETURNING id, organisation, fromprofile, toprofile, completed, createdat
 `
 
-type DeleteOrganisationTransferParams struct {
-	ID          uuid.UUID `json:"id"`
-	Fromprofile uuid.UUID `json:"fromprofile"`
-}
-
-func (q *Queries) DeleteOrganisationTransfer(ctx context.Context, arg DeleteOrganisationTransferParams) (Organisationtransfer, error) {
-	row := q.db.QueryRow(ctx, deleteOrganisationTransfer, arg.ID, arg.Fromprofile)
+func (q *Queries) DeleteOrganisationTransfer(ctx context.Context, id uuid.UUID) (Organisationtransfer, error) {
+	row := q.db.QueryRow(ctx, deleteOrganisationTransfer, id)
 	var i Organisationtransfer
 	err := row.Scan(
 		&i.ID,

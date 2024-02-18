@@ -92,3 +92,30 @@ func (q *Queries) UpdateOrganisation(ctx context.Context, arg UpdateOrganisation
 	)
 	return i, err
 }
+
+const updateOrganisationOwner = `-- name: UpdateOrganisationOwner :one
+UPDATE organisation
+SET owner = $1,
+    updatedAt = now()
+WHERE id = $2
+RETURNING id, name, description, owner, createdat, updatedat
+`
+
+type UpdateOrganisationOwnerParams struct {
+	Owner uuid.UUID `json:"owner"`
+	ID    uuid.UUID `json:"id"`
+}
+
+func (q *Queries) UpdateOrganisationOwner(ctx context.Context, arg UpdateOrganisationOwnerParams) (Organisation, error) {
+	row := q.db.QueryRow(ctx, updateOrganisationOwner, arg.Owner, arg.ID)
+	var i Organisation
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Owner,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}

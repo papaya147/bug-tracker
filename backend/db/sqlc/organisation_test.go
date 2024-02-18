@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/papaya147/buggy/backend/util"
 	"github.com/stretchr/testify/require"
@@ -70,4 +71,24 @@ func TestUpdateOrganisation(t *testing.T) {
 	require.Equal(t, arg.Owner, org2.Owner)
 
 	require.NotEqual(t, org1.Updatedat, org2.Updatedat)
+}
+
+func TestUpdateOrganisationOwner(t *testing.T) {
+	org1 := createRandomOrganisation(t)
+	profile := createRandomProfile(t)
+
+	arg := UpdateOrganisationOwnerParams{
+		Owner: profile.ID,
+		ID:    org1.ID,
+	}
+
+	org2, err := testQueries.UpdateOrganisationOwner(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, org2)
+
+	require.Equal(t, org1.ID, org2.ID)
+	require.Equal(t, org1.Name, org2.Name)
+	require.Equal(t, org1.Description, org2.Description)
+	require.Equal(t, arg.Owner, org2.Owner)
+	require.WithinDuration(t, org1.Createdat, org2.Createdat, time.Second)
 }

@@ -37,3 +37,7 @@ func RandomString(n int) string {
 
 	return sb.String()
 }
+
+func RandomBool() bool {
+	return rand.Intn(2) == 0
+}
