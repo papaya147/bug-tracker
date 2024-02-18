@@ -10,7 +10,7 @@ import (
 	"github.com/papaya147/buggy/backend/config"
 )
 
-var testQueries *Queries
+var testQueries Store
 
 func TestMain(m *testing.M) {
 	config := config.NewConfig("../../")
@@ -20,7 +20,7 @@ func TestMain(m *testing.M) {
 		log.Panicf("unable to connect to the database... %s", err.Error())
 	}
 
-	testQueries = New(conn)
+	testQueries = NewStore(conn)
 
 	os.Exit(m.Run())
 }

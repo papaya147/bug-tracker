@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS organisation(
 ALTER TABLE organisation
 ADD FOREIGN KEY (owner) REFERENCES profile(id);
 CREATE TABLE IF NOT EXISTS organisationTransfer(
+    id UUID NOT NULL,
     organisation UUID NOT NULL,
     fromProfile UUID NOT NULL,
     toProfile UUID NOT NULL,

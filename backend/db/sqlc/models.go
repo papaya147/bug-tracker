@@ -35,6 +35,7 @@ type Organisation struct {
 }
 
 type Organisationtransfer struct {
+	ID           uuid.UUID `json:"id"`
 	Organisation uuid.UUID `json:"organisation"`
 	Fromprofile  uuid.UUID `json:"fromprofile"`
 	Toprofile    uuid.UUID `json:"toprofile"`

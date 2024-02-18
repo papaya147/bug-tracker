@@ -14,6 +14,7 @@ type Querier interface {
 	CreateOrganisation(ctx context.Context, arg CreateOrganisationParams) (Organisation, error)
 	CreateOrganisationTransfer(ctx context.Context, arg CreateOrganisationTransferParams) (Organisationtransfer, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
+	GetActiveOrganisationTransfer(ctx context.Context, organisation uuid.UUID) (Organisationtransfer, error)
 	GetOrganisation(ctx context.Context, owner uuid.UUID) (Organisation, error)
 	GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
 	GetProfileByEmail(ctx context.Context, email string) (Profile, error)

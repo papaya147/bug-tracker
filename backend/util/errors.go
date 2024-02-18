@@ -16,6 +16,8 @@ var (
 	ErrWrongPassword          = errors.New("wrong password")
 	ErrEntityExists           = errors.New("entity already exists")
 	ErrEntityDoesNotExist     = errors.New("entity does not exist")
+	ErrTransferAlreadyExists  = errors.New("transfer already exists")
+	ErrCannotTransferToSelf   = errors.New("cannot transfer to self")
 )
 
 var CustomErrors = map[error]int{
@@ -29,4 +31,6 @@ var CustomErrors = map[error]int{
 	ErrWrongPassword:          http.StatusBadRequest,
 	ErrEntityExists:           http.StatusBadRequest,
 	ErrEntityDoesNotExist:     http.StatusBadRequest,
+	ErrTransferAlreadyExists:  http.StatusBadRequest,
+	ErrCannotTransferToSelf:   http.StatusBadRequest,
 }

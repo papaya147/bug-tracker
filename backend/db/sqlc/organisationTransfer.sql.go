@@ -12,21 +12,50 @@ import (
 )
 
 const createOrganisationTransfer = `-- name: CreateOrganisationTransfer :one
-INSERT INTO organisationTransfer (organisation, fromProfile, toProfile)
-VALUES ($1, $2, $3)
-RETURNING organisation, fromprofile, toprofile, completed, createdat
+INSERT INTO organisationTransfer (id, organisation, fromProfile, toProfile)
+VALUES ($1, $2, $3, $4)
+RETURNING id, organisation, fromprofile, toprofile, completed, createdat
 `
 
 type CreateOrganisationTransferParams struct {
+	ID           uuid.UUID `json:"id"`
 	Organisation uuid.UUID `json:"organisation"`
 	Fromprofile  uuid.UUID `json:"fromprofile"`
 	Toprofile    uuid.UUID `json:"toprofile"`
 }
 
 func (q *Queries) CreateOrganisationTransfer(ctx context.Context, arg CreateOrganisationTransferParams) (Organisationtransfer, error) {
-	row := q.db.QueryRow(ctx, createOrganisationTransfer, arg.Organisation, arg.Fromprofile, arg.Toprofile)
+	row := q.db.QueryRow(ctx, createOrganisationTransfer,
+		arg.ID,
+		arg.Organisation,
+		arg.Fromprofile,
+		arg.Toprofile,
+	)
 	var i Organisationtransfer
 	err := row.Scan(
+		&i.ID,
+		&i.Organisation,
+		&i.Fromprofile,
+		&i.Toprofile,
+		&i.Completed,
+		&i.Createdat,
+	)
+	return i, err
+}
+
+const getActiveOrganisationTransfer = `-- name: GetActiveOrganisationTransfer :one
+SELECT id, organisation, fromprofile, toprofile, completed, createdat
+FROM organisationTransfer
+WHERE organisation = $1
+    AND completed = false
+LIMIT 1
+`
+
+func (q *Queries) GetActiveOrganisationTransfer(ctx context.Context, organisation uuid.UUID) (Organisationtransfer, error) {
+	row := q.db.QueryRow(ctx, getActiveOrganisationTransfer, organisation)
+	var i Organisationtransfer
+	err := row.Scan(
+		&i.ID,
 		&i.Organisation,
 		&i.Fromprofile,
 		&i.Toprofile,

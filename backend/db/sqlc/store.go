@@ -7,9 +7,14 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+type Store interface {
+	Querier
+	CreateOrganisationTransferTx(ctx context.Context, arg CreateOrganisationTransferTxParams) (Organisationtransfer, error)
+}
+
 type sqlStore struct {
-	*Queries
 	db *pgxpool.Pool
+	*Queries
 }
 
 func NewStore(db *pgxpool.Pool) Store {

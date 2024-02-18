@@ -6,11 +6,17 @@ import (
 	"github.com/google/uuid"
 )
 
-type Store interface {
-	Querier
+type mockStore struct {
 }
 
-type mockStore struct {
+// CreateOrganisationTransferTx implements Store.
+func (*mockStore) CreateOrganisationTransferTx(ctx context.Context, arg CreateOrganisationTransferTxParams) (Organisationtransfer, error) {
+	return Organisationtransfer{}, nil
+}
+
+// GetActiveOrganisationTransfer implements Store.
+func (*mockStore) GetActiveOrganisationTransfer(ctx context.Context, organisation uuid.UUID) (Organisationtransfer, error) {
+	return Organisationtransfer{}, nil
 }
 
 // CreateOrganisationTransfer implements Store.
