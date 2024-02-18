@@ -66,6 +66,7 @@ type Team struct {
 type Teammember struct {
 	Team      uuid.UUID `json:"team"`
 	Profile   uuid.UUID `json:"profile"`
+	Admin     bool      `json:"admin"`
 	Createdat time.Time `json:"createdat"`
 	Updatedat time.Time `json:"updatedat"`
 }

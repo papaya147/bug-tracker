@@ -45,6 +45,7 @@ ADD FOREIGN KEY (organisation) REFERENCES organisation(id);
 CREATE TABLE IF NOT EXISTS teamMember(
     team UUID NOT NULL,
     profile UUID NOT NULL,
+    admin BOOLEAN NOT NULL,
     createdAt TIMESTAMPTZ NOT NULL DEFAULT now(),
     updatedAt TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (team, profile)
