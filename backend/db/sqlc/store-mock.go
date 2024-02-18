@@ -9,6 +9,11 @@ import (
 type mockStore struct {
 }
 
+// DeleteOrganisationTransfer implements Store.
+func (*mockStore) DeleteOrganisationTransfer(ctx context.Context, arg DeleteOrganisationTransferParams) (Organisationtransfer, error) {
+	return Organisationtransfer{}, nil
+}
+
 // GetOrganisationTransfersTx implements Store.
 func (*mockStore) GetOrganisationTransfersTx(ctx context.Context, arg uuid.UUID) (GetOrganisationTransfersTxResponse, error) {
 	return GetOrganisationTransfersTxResponse{}, nil

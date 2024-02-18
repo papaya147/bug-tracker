@@ -48,3 +48,21 @@ func TestGetActiveOrganisationTransfer(t *testing.T) {
 	require.Equal(t, transfer1.Fromprofile, transfer2.Fromprofile)
 	require.Equal(t, transfer1.Toprofile, transfer2.Toprofile)
 }
+
+func TestDeleteOrganisationTransfer(t *testing.T) {
+	org, _, transfer1 := createRandomOrganisationTransfer(t)
+
+	arg := DeleteOrganisationTransferParams{
+		ID:          transfer1.ID,
+		Fromprofile: org.Owner,
+	}
+
+	transfer2, err := testQueries.DeleteOrganisationTransfer(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, transfer2)
+
+	require.Equal(t, transfer1.ID, transfer2.ID)
+	require.Equal(t, transfer1.Organisation, transfer2.Organisation)
+	require.Equal(t, transfer1.Fromprofile, transfer2.Fromprofile)
+	require.Equal(t, transfer1.Toprofile, transfer2.Toprofile)
+}

@@ -16,8 +16,16 @@ SELECT ot.*,
 FROM organisationTransfer ot
     INNER JOIN organisation o ON ot.organisation = o.id
     INNER JOIN profile fp ON ot.fromProfile = fp.id
-WHERE toProfile = $1;
+WHERE toProfile = $1
+    AND completed = false;
 -- name: GetOutgoingOrganisationTransfers :many
 SELECT *
 FROM organisationTransfer
-WHERE fromProfile = $1;
+WHERE fromProfile = $1
+    AND completed = false;
+-- name: DeleteOrganisationTransfer :one
+DELETE FROM organisationTransfer
+WHERE id = $1
+    AND fromProfile = $2
+    AND completed = false
+RETURNING *;

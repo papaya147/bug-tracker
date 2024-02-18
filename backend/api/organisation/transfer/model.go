@@ -14,3 +14,7 @@ type transferResponse struct {
 	Completed    bool      `json:"completed"`
 	CreatedAt    int64     `json:"created_at"`
 }
+
+type transferId struct {
+	Id string `validate:"required,uuid"`
+}

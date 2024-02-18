@@ -44,6 +44,33 @@ func (q *Queries) CreateOrganisationTransfer(ctx context.Context, arg CreateOrga
 	return i, err
 }
 
+const deleteOrganisationTransfer = `-- name: DeleteOrganisationTransfer :one
+DELETE FROM organisationTransfer
+WHERE id = $1
+    AND fromProfile = $2
+    AND completed = false
+RETURNING id, organisation, fromprofile, toprofile, completed, createdat
+`
+
+type DeleteOrganisationTransferParams struct {
+	ID          uuid.UUID `json:"id"`
+	Fromprofile uuid.UUID `json:"fromprofile"`
+}
+
+func (q *Queries) DeleteOrganisationTransfer(ctx context.Context, arg DeleteOrganisationTransferParams) (Organisationtransfer, error) {
+	row := q.db.QueryRow(ctx, deleteOrganisationTransfer, arg.ID, arg.Fromprofile)
+	var i Organisationtransfer
+	err := row.Scan(
+		&i.ID,
+		&i.Organisation,
+		&i.Fromprofile,
+		&i.Toprofile,
+		&i.Completed,
+		&i.Createdat,
+	)
+	return i, err
+}
+
 const getActiveOrganisationTransfer = `-- name: GetActiveOrganisationTransfer :one
 SELECT id, organisation, fromprofile, toprofile, completed, createdat
 FROM organisationTransfer
@@ -75,6 +102,7 @@ FROM organisationTransfer ot
     INNER JOIN organisation o ON ot.organisation = o.id
     INNER JOIN profile fp ON ot.fromProfile = fp.id
 WHERE toProfile = $1
+    AND completed = false
 `
 
 type GetIncomingOrganisationTransfersRow struct {
@@ -123,6 +151,7 @@ const getOutgoingOrganisationTransfers = `-- name: GetOutgoingOrganisationTransf
 SELECT id, organisation, fromprofile, toprofile, completed, createdat
 FROM organisationTransfer
 WHERE fromProfile = $1
+    AND completed = false
 `
 
 func (q *Queries) GetOutgoingOrganisationTransfers(ctx context.Context, fromprofile uuid.UUID) ([]Organisationtransfer, error) {

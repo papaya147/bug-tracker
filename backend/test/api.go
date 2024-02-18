@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/papaya147/buggy/backend/token"
 	"github.com/papaya147/buggy/backend/util"
 )
@@ -15,6 +16,10 @@ import (
 func TestCase(t *testing.T, method, route string, handler http.HandlerFunc, body []byte, expected int, headers ...string) {
 	req, _ := http.NewRequest(method, route, bytes.NewReader(body))
 	rr := httptest.NewRecorder()
+
+	req = addChiURLParams(req, map[string]string{
+		"organisation-transfer-id": util.RandomUuid().String(),
+	})
 
 	for _, header := range headers {
 		parts := strings.Split(header, ":")
@@ -38,4 +43,13 @@ func addMockTokenToContext(ctx context.Context) context.Context {
 		TokenId:   util.RandomUuid(),
 		TokenType: token.AccessToken,
 	})
+}
+
+func addChiURLParams(r *http.Request, params map[string]string) *http.Request {
+	ctx := chi.NewRouteContext()
+	for k, v := range params {
+		ctx.URLParams.Add(k, v)
+	}
+
+	return r.WithContext(context.WithValue(r.Context(), chi.RouteCtxKey, ctx))
 }
