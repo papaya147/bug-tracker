@@ -22,6 +22,7 @@ func (handler *Handler) Routes() *chi.Mux {
 	router := chi.NewMux()
 
 	router.Post("/", handler.create)
+	router.Get("/", handler.get)
 
 	return router
 }

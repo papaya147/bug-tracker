@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -63,4 +64,90 @@ func (q *Queries) GetActiveOrganisationTransfer(ctx context.Context, organisatio
 		&i.Createdat,
 	)
 	return i, err
+}
+
+const getIncomingOrganisationTransfers = `-- name: GetIncomingOrganisationTransfers :many
+SELECT ot.id, ot.organisation, ot.fromprofile, ot.toprofile, ot.completed, ot.createdat,
+    o.name as orgname,
+    o.description,
+    fp.name as profilename
+FROM organisationTransfer ot
+    INNER JOIN organisation o ON ot.organisation = o.id
+    INNER JOIN profile fp ON ot.fromProfile = fp.id
+WHERE toProfile = $1
+`
+
+type GetIncomingOrganisationTransfersRow struct {
+	ID           uuid.UUID `json:"id"`
+	Organisation uuid.UUID `json:"organisation"`
+	Fromprofile  uuid.UUID `json:"fromprofile"`
+	Toprofile    uuid.UUID `json:"toprofile"`
+	Completed    bool      `json:"completed"`
+	Createdat    time.Time `json:"createdat"`
+	Orgname      string    `json:"orgname"`
+	Description  string    `json:"description"`
+	Profilename  string    `json:"profilename"`
+}
+
+func (q *Queries) GetIncomingOrganisationTransfers(ctx context.Context, toprofile uuid.UUID) ([]GetIncomingOrganisationTransfersRow, error) {
+	rows, err := q.db.Query(ctx, getIncomingOrganisationTransfers, toprofile)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetIncomingOrganisationTransfersRow{}
+	for rows.Next() {
+		var i GetIncomingOrganisationTransfersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Organisation,
+			&i.Fromprofile,
+			&i.Toprofile,
+			&i.Completed,
+			&i.Createdat,
+			&i.Orgname,
+			&i.Description,
+			&i.Profilename,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getOutgoingOrganisationTransfers = `-- name: GetOutgoingOrganisationTransfers :many
+SELECT id, organisation, fromprofile, toprofile, completed, createdat
+FROM organisationTransfer
+WHERE fromProfile = $1
+`
+
+func (q *Queries) GetOutgoingOrganisationTransfers(ctx context.Context, fromprofile uuid.UUID) ([]Organisationtransfer, error) {
+	rows, err := q.db.Query(ctx, getOutgoingOrganisationTransfers, fromprofile)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Organisationtransfer{}
+	for rows.Next() {
+		var i Organisationtransfer
+		if err := rows.Scan(
+			&i.ID,
+			&i.Organisation,
+			&i.Fromprofile,
+			&i.Toprofile,
+			&i.Completed,
+			&i.Createdat,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

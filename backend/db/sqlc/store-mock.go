@@ -9,6 +9,21 @@ import (
 type mockStore struct {
 }
 
+// GetOrganisationTransfersTx implements Store.
+func (*mockStore) GetOrganisationTransfersTx(ctx context.Context, arg uuid.UUID) (GetOrganisationTransfersTxResponse, error) {
+	return GetOrganisationTransfersTxResponse{}, nil
+}
+
+// GetIncomingOrganisationTransfers implements Store.
+func (*mockStore) GetIncomingOrganisationTransfers(ctx context.Context, toprofile uuid.UUID) ([]GetIncomingOrganisationTransfersRow, error) {
+	return nil, nil
+}
+
+// GetOutgoingOrganisationTransfers implements Store.
+func (*mockStore) GetOutgoingOrganisationTransfers(ctx context.Context, fromprofile uuid.UUID) ([]Organisationtransfer, error) {
+	return nil, nil
+}
+
 // CreateOrganisationTransferTx implements Store.
 func (*mockStore) CreateOrganisationTransferTx(ctx context.Context, arg CreateOrganisationTransferTxParams) (Organisationtransfer, error) {
 	return Organisationtransfer{}, nil
