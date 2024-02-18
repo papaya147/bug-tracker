@@ -14,9 +14,19 @@ type CompleteOrganisationTransferTxParams struct {
 }
 
 func (store *sqlStore) CompleteOrganisationTransferTx(ctx context.Context, arg CompleteOrganisationTransferTxParams) (Organisation, error) {
-	var org Organisation
+	var transferredOrg Organisation
 
 	err := store.execTx(ctx, func(q *Queries) error {
+		// * check if profile already has organisation
+		profileOrg, err := q.GetOrganisation(ctx, arg.ToProfile)
+		if err != nil && err != pgx.ErrNoRows {
+			return util.ErrDatabase
+		}
+
+		if profileOrg.ID != uuid.Nil {
+			return util.ErrEntityExists
+		}
+
 		transfer, err := q.CompleteOrganisationTransfer(ctx, CompleteOrganisationTransferParams{
 			ID:        arg.TransferId,
 			Toprofile: arg.ToProfile,
@@ -28,7 +38,7 @@ func (store *sqlStore) CompleteOrganisationTransferTx(ctx context.Context, arg C
 			return util.ErrDatabase
 		}
 
-		org, err = q.UpdateOrganisationOwner(ctx, UpdateOrganisationOwnerParams{
+		transferredOrg, err = q.UpdateOrganisationOwner(ctx, UpdateOrganisationOwnerParams{
 			Owner: arg.ToProfile,
 			ID:    transfer.Organisation,
 		})
@@ -39,5 +49,5 @@ func (store *sqlStore) CompleteOrganisationTransferTx(ctx context.Context, arg C
 		return nil
 	})
 
-	return org, err
+	return transferredOrg, err
 }
