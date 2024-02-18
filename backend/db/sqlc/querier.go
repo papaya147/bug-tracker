@@ -13,8 +13,10 @@ import (
 type Querier interface {
 	CreateOrganisation(ctx context.Context, arg CreateOrganisationParams) (Organisation, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
+	GetOrganisation(ctx context.Context, owner uuid.UUID) (Organisation, error)
 	GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
 	GetProfileByEmail(ctx context.Context, email string) (Profile, error)
+	UpdateOrganisation(ctx context.Context, arg UpdateOrganisationParams) (Organisation, error)
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) (Profile, error)
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
 	UpdateTokenId(ctx context.Context, arg UpdateTokenIdParams) (Profile, error)

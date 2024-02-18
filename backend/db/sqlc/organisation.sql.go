@@ -42,3 +42,53 @@ func (q *Queries) CreateOrganisation(ctx context.Context, arg CreateOrganisation
 	)
 	return i, err
 }
+
+const getOrganisation = `-- name: GetOrganisation :one
+SELECT id, name, description, owner, createdat, updatedat
+FROM organisation
+WHERE owner = $1
+LIMIT 1
+`
+
+func (q *Queries) GetOrganisation(ctx context.Context, owner uuid.UUID) (Organisation, error) {
+	row := q.db.QueryRow(ctx, getOrganisation, owner)
+	var i Organisation
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Owner,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}
+
+const updateOrganisation = `-- name: UpdateOrganisation :one
+UPDATE organisation
+SET name = $1,
+    description = $2,
+    updatedAt = now()
+WHERE owner = $3
+RETURNING id, name, description, owner, createdat, updatedat
+`
+
+type UpdateOrganisationParams struct {
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Owner       uuid.UUID `json:"owner"`
+}
+
+func (q *Queries) UpdateOrganisation(ctx context.Context, arg UpdateOrganisationParams) (Organisation, error) {
+	row := q.db.QueryRow(ctx, updateOrganisation, arg.Name, arg.Description, arg.Owner)
+	var i Organisation
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Owner,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}

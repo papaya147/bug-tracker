@@ -3,13 +3,13 @@ package organisation
 import (
 	"net/http"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	db "github.com/papaya147/buggy/backend/db/sqlc"
 	"github.com/papaya147/buggy/backend/token"
 	"github.com/papaya147/buggy/backend/util"
 )
 
-func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
+func (handler *Handler) update(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
 		util.ErrorJson(w, err)
@@ -22,24 +22,16 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orgId, err := uuid.NewV7()
-	if err != nil {
-		util.ErrorJson(w, util.ErrInternal)
-		return
-	}
-
-	org, err := handler.store.CreateOrganisation(r.Context(), db.CreateOrganisationParams{
-		ID:          orgId,
+	org, err := handler.store.UpdateOrganisation(r.Context(), db.UpdateOrganisationParams{
+		Owner:       payload.UserId,
 		Name:        requestPayload.Name,
 		Description: requestPayload.Description,
-		Owner:       payload.UserId,
 	})
 	if err != nil {
-		if db.ErrorCode(err) == db.UniqueViolation {
-			util.ErrorJson(w, util.ErrEntityExists)
+		if err == pgx.ErrNoRows {
+			util.ErrorJson(w, util.ErrEntityDoesNotExist)
 			return
 		}
-
 		util.ErrorJson(w, util.ErrDatabase)
 		return
 	}

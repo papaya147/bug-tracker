@@ -12,4 +12,6 @@ type organisationResponse struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Owner       uuid.UUID `json:"owner"`
+	CreatedAt   int64     `json:"created_at"`
+	UpdatedAt   int64     `json:"updated_at"`
 }

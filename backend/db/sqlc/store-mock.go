@@ -13,6 +13,16 @@ type Store interface {
 type mockStore struct {
 }
 
+// UpdateOrganisation implements Store.
+func (*mockStore) UpdateOrganisation(ctx context.Context, arg UpdateOrganisationParams) (Organisation, error) {
+	return Organisation{}, nil
+}
+
+// GetOrganisation implements Store.
+func (*mockStore) GetOrganisation(ctx context.Context, id uuid.UUID) (Organisation, error) {
+	return Organisation{}, nil
+}
+
 // CreateOrganisation implements Store.
 func (*mockStore) CreateOrganisation(ctx context.Context, arg CreateOrganisationParams) (Organisation, error) {
 	return Organisation{}, nil
