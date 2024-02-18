@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomTeam(t *testing.T) {
+func createRandomTeam(t *testing.T) (Organisation, Team) {
 	org := createRandomOrganisation(t)
 
 	arg := CreateTeamParams{
@@ -29,8 +29,45 @@ func createRandomTeam(t *testing.T) {
 
 	require.NotZero(t, team.Createdat)
 	require.NotZero(t, team.Updatedat)
+
+	return org, team
 }
 
 func TestCreateTeam(t *testing.T) {
 	createRandomTeam(t)
+}
+
+func TestGetOrganisationTeams(t *testing.T) {
+	org, team := createRandomTeam(t)
+
+	arg := org.ID
+
+	teams, err := testQueries.GetOrganisationTeams(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, teams)
+
+	require.Contains(t, teams, team)
+}
+
+func TestUpdateTeam(t *testing.T) {
+	org, team1 := createRandomTeam(t)
+
+	arg := UpdateTeamParams{
+		Name:         util.RandomString(10),
+		Description:  util.RandomString(100),
+		ID:           team1.ID,
+		Organisation: org.ID,
+	}
+
+	team2, err := testQueries.UpdateTeam(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, team2)
+
+	require.Equal(t, arg.ID, team2.ID)
+	require.Equal(t, arg.Name, team2.Name)
+	require.Equal(t, arg.Description, team2.Description)
+	require.Equal(t, arg.Organisation, team2.Organisation)
+
+	require.NotZero(t, team2.Createdat)
+	require.NotZero(t, team2.Updatedat)
 }

@@ -16,3 +16,7 @@ type teamResponse struct {
 	CreatedAt               int64     `json:"created_at"`
 	UpdatedAt               int64     `json:"updated_at"`
 }
+
+type teamId struct {
+	Id string `json:"id" validate:"required,uuid"`
+}

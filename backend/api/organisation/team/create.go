@@ -46,6 +46,10 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 		Organisation: org.ID,
 	})
 	if err != nil {
+		if db.ErrorCode(err) == db.UniqueViolation {
+			util.ErrorJson(w, util.ErrEntityExists)
+			return
+		}
 		util.ErrorJson(w, util.ErrDatabase)
 		return
 	}

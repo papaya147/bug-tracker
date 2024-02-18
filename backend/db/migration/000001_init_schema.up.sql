@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS team(
     description TEXT NOT NULL,
     organisation UUID NOT NULL,
     createdAt TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updatedAt TIMESTAMPTZ NOT NULL DEFAULT now()
+    updatedAt TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE(name, organisation)
 );
 ALTER TABLE team
 ADD FOREIGN KEY (organisation) REFERENCES organisation(id);

@@ -42,3 +42,72 @@ func (q *Queries) CreateTeam(ctx context.Context, arg CreateTeamParams) (Team, e
 	)
 	return i, err
 }
+
+const getOrganisationTeams = `-- name: GetOrganisationTeams :many
+SELECT id, name, description, organisation, createdat, updatedat
+FROM team
+WHERE organisation = $1
+`
+
+func (q *Queries) GetOrganisationTeams(ctx context.Context, organisation uuid.UUID) ([]Team, error) {
+	rows, err := q.db.Query(ctx, getOrganisationTeams, organisation)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Team{}
+	for rows.Next() {
+		var i Team
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Organisation,
+			&i.Createdat,
+			&i.Updatedat,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateTeam = `-- name: UpdateTeam :one
+UPDATE team
+SET name = $1,
+    description = $2,
+    updatedAt = now()
+WHERE id = $3
+    AND organisation = $4
+RETURNING id, name, description, organisation, createdat, updatedat
+`
+
+type UpdateTeamParams struct {
+	Name         string    `json:"name"`
+	Description  string    `json:"description"`
+	ID           uuid.UUID `json:"id"`
+	Organisation uuid.UUID `json:"organisation"`
+}
+
+func (q *Queries) UpdateTeam(ctx context.Context, arg UpdateTeamParams) (Team, error) {
+	row := q.db.QueryRow(ctx, updateTeam,
+		arg.Name,
+		arg.Description,
+		arg.ID,
+		arg.Organisation,
+	)
+	var i Team
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Organisation,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}
