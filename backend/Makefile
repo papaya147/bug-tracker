@@ -19,6 +19,7 @@ test:
 clean_run:
 	make migratedown
 	make migrateup
+	make test
 	go run main.go
 
 .PHONY: test postgres createdb dropdb

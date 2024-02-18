@@ -14,6 +14,7 @@ func (app *server) routes() *chi.Mux {
 		middleware.StripSlashes,
 		middleware.Recoverer,
 		middleware.Heartbeat("/ping"),
+		middleware.Logger,
 		cors.Handler(cors.Options{
 			AllowedOrigins:   []string{"https://*", "http://*"},
 			AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
@@ -26,6 +27,7 @@ func (app *server) routes() *chi.Mux {
 
 	router.Route("/api/v1", func(r chi.Router) {
 		r.Mount("/profile", app.profileHandler.Routes())
+		r.Mount("/organisation", app.organisationHandler.Routes())
 	})
 
 	return router

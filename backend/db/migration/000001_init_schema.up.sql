@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS organisation(
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
-    owner UUID NOT NULL,
+    owner UUID NOT NULL UNIQUE,
     createdAt TIMESTAMPTZ NOT NULL DEFAULT now(),
     updatedAt TIMESTAMPTZ NOT NULL DEFAULT now()
 );

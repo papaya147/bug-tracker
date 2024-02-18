@@ -11,6 +11,7 @@ import (
 )
 
 type Querier interface {
+	CreateOrganisation(ctx context.Context, arg CreateOrganisationParams) (Organisation, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
 	GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
 	GetProfileByEmail(ctx context.Context, email string) (Profile, error)

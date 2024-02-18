@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/papaya147/buggy/backend/api/organisation"
 	"github.com/papaya147/buggy/backend/api/profile"
 	"github.com/papaya147/buggy/backend/config"
 	db "github.com/papaya147/buggy/backend/db/sqlc"
@@ -12,11 +13,12 @@ import (
 )
 
 type server struct {
-	config         *config.Config
-	store          db.Store
-	tokenMaker     token.Maker
-	profileHandler *profile.Handler
-	router         *chi.Mux
+	config              *config.Config
+	store               db.Store
+	tokenMaker          token.Maker
+	profileHandler      *profile.Handler
+	organisationHandler *organisation.Handler
+	router              *chi.Mux
 }
 
 func NewServer(store db.Store, maker token.Maker) *server {
@@ -29,6 +31,7 @@ func NewServer(store db.Store, maker token.Maker) *server {
 	}
 
 	server.profileHandler = profile.NewHandler(config, store, maker)
+	server.organisationHandler = organisation.NewHandler(config, store, maker)
 	server.router = server.routes()
 
 	return server

@@ -17,8 +17,14 @@ func (handler *Handler) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	tokenId, err := uuid.NewRandom()
+	if err != nil {
+		util.ErrorJson(w, util.ErrInternal)
+		return
+	}
+
 	profile, err := handler.store.UpdateTokenIdByEmail(r.Context(), db.UpdateTokenIdByEmailParams{
-		Tokenid: uuid.New(),
+		Tokenid: tokenId,
 		Email:   requestPayload.Email,
 	})
 	if err != nil {

@@ -13,6 +13,7 @@ var (
 	ErrUserNotFound           = errors.New("user not found or not verified")
 	ErrProfileAlreadyVerified = errors.New("profile already verified")
 	ErrWrongPassword          = errors.New("wrong password")
+	ErrEntityExists           = errors.New("entity already exists")
 )
 
 var CustomErrors = map[error]int{
@@ -23,4 +24,5 @@ var CustomErrors = map[error]int{
 	ErrUserNotFound:           http.StatusBadRequest,
 	ErrProfileAlreadyVerified: http.StatusBadRequest,
 	ErrWrongPassword:          http.StatusBadRequest,
+	ErrEntityExists:           http.StatusBadRequest,
 }

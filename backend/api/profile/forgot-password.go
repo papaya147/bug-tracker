@@ -2,7 +2,6 @@ package profile
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -34,6 +33,6 @@ func (handler *Handler) forgotPassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	redirectPath := fmt.Sprintf("%s%s?token=%s", handler.config.CLIENT_PREFIX, handler.config.FORGOT_PASSWORD_PATH, token)
-	// TODO - send the path as a link in the email
-	log.Println(redirectPath)
+	// TODO - send the path as a link in an email
+	fmt.Println(redirectPath)
 }
