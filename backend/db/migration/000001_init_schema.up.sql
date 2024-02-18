@@ -18,6 +18,19 @@ CREATE TABLE IF NOT EXISTS organisation(
 );
 ALTER TABLE organisation
 ADD FOREIGN KEY (owner) REFERENCES profile(id);
+CREATE TABLE IF NOT EXISTS organisationTransfer(
+    organisation UUID NOT NULL,
+    fromProfile UUID NOT NULL,
+    toProfile UUID NOT NULL,
+    completed BOOLEAN NOT NULL DEFAULT false,
+    createdAt TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+ALTER TABLE organisationTransfer
+ADD FOREIGN KEY (organisation) REFERENCES organisation(id);
+ALTER TABLE organisationTransfer
+ADD FOREIGN KEY (fromProfile) REFERENCES profile(id);
+ALTER TABLE organisationTransfer
+ADD FOREIGN KEY (toProfile) REFERENCES profile(id);
 CREATE TABLE IF NOT EXISTS team(
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,

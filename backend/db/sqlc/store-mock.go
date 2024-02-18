@@ -13,6 +13,11 @@ type Store interface {
 type mockStore struct {
 }
 
+// CreateOrganisationTransfer implements Store.
+func (*mockStore) CreateOrganisationTransfer(ctx context.Context, arg CreateOrganisationTransferParams) (Organisationtransfer, error) {
+	return Organisationtransfer{}, nil
+}
+
 // UpdateOrganisation implements Store.
 func (*mockStore) UpdateOrganisation(ctx context.Context, arg UpdateOrganisationParams) (Organisation, error) {
 	return Organisation{}, nil

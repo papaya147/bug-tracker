@@ -12,6 +12,7 @@ import (
 
 type Querier interface {
 	CreateOrganisation(ctx context.Context, arg CreateOrganisationParams) (Organisation, error)
+	CreateOrganisationTransfer(ctx context.Context, arg CreateOrganisationTransferParams) (Organisationtransfer, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
 	GetOrganisation(ctx context.Context, owner uuid.UUID) (Organisation, error)
 	GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)

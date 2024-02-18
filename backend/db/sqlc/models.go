@@ -34,6 +34,14 @@ type Organisation struct {
 	Updatedat   time.Time `json:"updatedat"`
 }
 
+type Organisationtransfer struct {
+	Organisation uuid.UUID `json:"organisation"`
+	Fromprofile  uuid.UUID `json:"fromprofile"`
+	Toprofile    uuid.UUID `json:"toprofile"`
+	Completed    bool      `json:"completed"`
+	Createdat    time.Time `json:"createdat"`
+}
+
 type Profile struct {
 	ID        uuid.UUID `json:"id"`
 	Tokenid   uuid.UUID `json:"tokenid"`
