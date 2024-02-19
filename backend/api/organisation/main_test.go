@@ -4,15 +4,15 @@ import (
 	"os"
 	"testing"
 
-	"github.com/papaya147/buggy/backend/config"
 	db "github.com/papaya147/buggy/backend/db/sqlc"
 	"github.com/papaya147/buggy/backend/token"
+	"github.com/papaya147/buggy/backend/util"
 )
 
 var testHandler *Handler
 
 func TestMain(m *testing.M) {
-	config := config.NewConfig("../../")
+	config := util.NewConfig("../../")
 
 	store := db.NewMockStore()
 

@@ -5,14 +5,13 @@ import (
 	"log"
 
 	"github.com/papaya147/buggy/backend/api"
-	"github.com/papaya147/buggy/backend/config"
 	db "github.com/papaya147/buggy/backend/db/sqlc"
 	"github.com/papaya147/buggy/backend/token"
 	"github.com/papaya147/buggy/backend/util"
 )
 
 func main() {
-	config := config.NewConfig(".")
+	config := util.NewConfig(".")
 
 	postgresConn := util.CreatePostgresPool(config.POSTGRES_DSN)
 

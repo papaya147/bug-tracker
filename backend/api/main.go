@@ -7,13 +7,13 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/papaya147/buggy/backend/api/organisation"
 	"github.com/papaya147/buggy/backend/api/profile"
-	"github.com/papaya147/buggy/backend/config"
 	db "github.com/papaya147/buggy/backend/db/sqlc"
 	"github.com/papaya147/buggy/backend/token"
+	"github.com/papaya147/buggy/backend/util"
 )
 
 type server struct {
-	config              *config.Config
+	config              *util.Config
 	store               db.Store
 	tokenMaker          token.Maker
 	profileHandler      *profile.Handler
@@ -22,7 +22,7 @@ type server struct {
 }
 
 func NewServer(store db.Store, maker token.Maker) *server {
-	config := config.NewConfig(".")
+	config := util.NewConfig(".")
 
 	server := &server{
 		config:     config,

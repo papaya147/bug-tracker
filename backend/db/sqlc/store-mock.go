@@ -9,6 +9,11 @@ import (
 type mockStore struct {
 }
 
+// CreateTeamMember implements Store.
+func (*mockStore) CreateTeamMember(ctx context.Context, arg CreateTeamMemberParams) (Teammember, error) {
+	return Teammember{}, nil
+}
+
 // UpdateTeam implements Store.
 func (*mockStore) UpdateTeam(ctx context.Context, arg UpdateTeamParams) (Team, error) {
 	return Team{}, nil

@@ -2,18 +2,18 @@ package profile
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/papaya147/buggy/backend/config"
 	db "github.com/papaya147/buggy/backend/db/sqlc"
 	"github.com/papaya147/buggy/backend/token"
+	"github.com/papaya147/buggy/backend/util"
 )
 
 type Handler struct {
-	config     *config.Config
+	config     *util.Config
 	store      db.Store
 	tokenMaker token.Maker
 }
 
-func NewHandler(config *config.Config, store db.Store, maker token.Maker) *Handler {
+func NewHandler(config *util.Config, store db.Store, maker token.Maker) *Handler {
 	return &Handler{
 		store:      store,
 		config:     config,

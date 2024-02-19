@@ -1,6 +1,7 @@
 package team
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -53,6 +54,12 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 		util.ErrorJson(w, util.ErrDatabase)
 		return
 	}
+
+	go handler.store.CreateTeamMember(context.Background(), db.CreateTeamMemberParams{
+		Team:    teamId,
+		Profile: payload.UserId,
+		Admin:   true,
+	})
 
 	util.WriteJson(w, http.StatusOK, teamResponse{
 		Id:                      team.ID,

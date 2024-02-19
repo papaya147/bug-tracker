@@ -2,16 +2,16 @@ package team
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/papaya147/buggy/backend/config"
 	db "github.com/papaya147/buggy/backend/db/sqlc"
+	"github.com/papaya147/buggy/backend/util"
 )
 
 type Handler struct {
-	config *config.Config
+	config *util.Config
 	store  db.Store
 }
 
-func NewHandler(config *config.Config, store db.Store) *Handler {
+func NewHandler(config *util.Config, store db.Store) *Handler {
 	return &Handler{
 		store:  store,
 		config: config,

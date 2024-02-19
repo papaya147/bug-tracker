@@ -16,6 +16,7 @@ type Querier interface {
 	CreateOrganisationTransfer(ctx context.Context, arg CreateOrganisationTransferParams) (Organisationtransfer, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
 	CreateTeam(ctx context.Context, arg CreateTeamParams) (Team, error)
+	CreateTeamMember(ctx context.Context, arg CreateTeamMemberParams) (Teammember, error)
 	DeleteOrganisationTransfer(ctx context.Context, id uuid.UUID) (Organisationtransfer, error)
 	GetActiveOrganisationTransfer(ctx context.Context, organisation uuid.UUID) (Organisationtransfer, error)
 	GetIncomingOrganisationTransfers(ctx context.Context, toprofile uuid.UUID) ([]GetIncomingOrganisationTransfersRow, error)
