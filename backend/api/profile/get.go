@@ -18,7 +18,7 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 	profile, err := handler.store.GetProfile(r.Context(), payload.UserId)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrUserNotFound)
+			util.ErrorJson(w, util.ErrProfileNotFound)
 			return
 		}
 		util.ErrorJson(w, util.ErrDatabase)

@@ -14,3 +14,7 @@ SET name = $1,
 WHERE id = $3
     AND organisation = $4
 RETURNING *;
+-- name: GetTeamOrganisation :one
+SELECT organisation
+FROM team
+WHERE id = $1;

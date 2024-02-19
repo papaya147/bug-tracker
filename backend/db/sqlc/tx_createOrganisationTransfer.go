@@ -20,7 +20,7 @@ func (store *sqlStore) CreateOrganisationTransferTx(ctx context.Context, arg Cre
 		toProfile, err := q.GetProfileByEmail(ctx, arg.ToEmail)
 		if err != nil {
 			if err == pgx.ErrNoRows {
-				return util.ErrUserNotFound
+				return util.ErrProfileNotFound
 			}
 			return util.ErrDatabase
 		}

@@ -39,7 +39,7 @@ func Middleware(tokenMaker Maker, store db.Store) func(http.Handler) http.Handle
 			profile, err := store.GetProfile(r.Context(), payload.UserId)
 			if err != nil {
 				if err == pgx.ErrNoRows {
-					util.ErrorJson(w, util.ErrUserNotFound)
+					util.ErrorJson(w, util.ErrProfileNotFound)
 					return
 				}
 				util.ErrorJson(w, util.ErrDatabase)

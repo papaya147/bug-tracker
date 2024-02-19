@@ -71,3 +71,15 @@ func TestUpdateTeam(t *testing.T) {
 	require.NotZero(t, team2.Createdat)
 	require.NotZero(t, team2.Updatedat)
 }
+
+func TestGetTeamOrganisation(t *testing.T) {
+	org, team1 := createRandomTeam(t)
+
+	arg := team1.ID
+
+	orgId, err := testQueries.GetTeamOrganisation(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, orgId)
+
+	require.Equal(t, org.ID, orgId)
+}

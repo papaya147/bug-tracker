@@ -28,6 +28,7 @@ func (app *server) routes() *chi.Mux {
 	router.Route("/api/v1", func(r chi.Router) {
 		r.Mount("/profile", app.profileHandler.Routes())
 		r.Mount("/organisation", app.organisationHandler.Routes())
+		r.Mount("/team-member", app.teamMemberHandler.Routes())
 	})
 
 	return router

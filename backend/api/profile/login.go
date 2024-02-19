@@ -29,7 +29,7 @@ func (handler *Handler) login(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrUserNotFound)
+			util.ErrorJson(w, util.ErrProfileNotFound)
 			return
 		}
 		util.ErrorJson(w, util.ErrDatabase)

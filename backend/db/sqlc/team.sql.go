@@ -76,6 +76,19 @@ func (q *Queries) GetOrganisationTeams(ctx context.Context, organisation uuid.UU
 	return items, nil
 }
 
+const getTeamOrganisation = `-- name: GetTeamOrganisation :one
+SELECT organisation
+FROM team
+WHERE id = $1
+`
+
+func (q *Queries) GetTeamOrganisation(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getTeamOrganisation, id)
+	var organisation uuid.UUID
+	err := row.Scan(&organisation)
+	return organisation, err
+}
+
 const updateTeam = `-- name: UpdateTeam :one
 UPDATE team
 SET name = $1,
