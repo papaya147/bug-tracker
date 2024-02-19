@@ -28,6 +28,7 @@ func (handler *Handler) Routes() *chi.Mux {
 		r.Use(token.Middleware(handler.tokenMaker, handler.store))
 		r.Post("/", handler.create)
 		r.Get("/{team-id}", handler.get)
+		r.Put("/", handler.update)
 	})
 
 	return router

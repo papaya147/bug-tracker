@@ -10,7 +10,7 @@ type createTeamMemberRequest struct {
 
 type updateTeamMemberRequest struct {
 	TeamId    uuid.UUID `json:"team_id" validate:"required"`
-	ProfileId uuid.UUID `json:"email" validate:"required"`
+	ProfileId uuid.UUID `json:"profile_id" validate:"required"`
 	Admin     bool      `json:"admin"`
 }
 
@@ -28,6 +28,7 @@ type teamId struct {
 
 type profileResponse struct {
 	Id        uuid.UUID `json:"id"`
+	Admin     bool      `json:"admin"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Verified  bool      `json:"verified"`

@@ -9,7 +9,15 @@ WHERE team = $1
     AND profile = $2
 LIMIT 1;
 -- name: GetAllTeamMembers :many
-SELECT p.*
+SELECT p.*,
+    tm.admin
 FROM teamMember tm
     INNER JOIN profile p ON tm.profile = p.id
 WHERE tm.team = $1;
+-- name: UpdateTeamMember :one
+UPDATE teamMember
+SET admin = $1,
+    updatedAt = now()
+WHERE team = $2
+    AND profile = $3
+RETURNING *;

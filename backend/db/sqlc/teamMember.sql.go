@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -37,21 +38,34 @@ func (q *Queries) CreateTeamMember(ctx context.Context, arg CreateTeamMemberPara
 }
 
 const getAllTeamMembers = `-- name: GetAllTeamMembers :many
-SELECT p.id, p.tokenid, p.name, p.email, p.password, p.verified, p.createdat, p.updatedat
+SELECT p.id, p.tokenid, p.name, p.email, p.password, p.verified, p.createdat, p.updatedat,
+    tm.admin
 FROM teamMember tm
     INNER JOIN profile p ON tm.profile = p.id
 WHERE tm.team = $1
 `
 
-func (q *Queries) GetAllTeamMembers(ctx context.Context, team uuid.UUID) ([]Profile, error) {
+type GetAllTeamMembersRow struct {
+	ID        uuid.UUID `json:"id"`
+	Tokenid   uuid.UUID `json:"tokenid"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	Verified  bool      `json:"verified"`
+	Createdat time.Time `json:"createdat"`
+	Updatedat time.Time `json:"updatedat"`
+	Admin     bool      `json:"admin"`
+}
+
+func (q *Queries) GetAllTeamMembers(ctx context.Context, team uuid.UUID) ([]GetAllTeamMembersRow, error) {
 	rows, err := q.db.Query(ctx, getAllTeamMembers, team)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Profile{}
+	items := []GetAllTeamMembersRow{}
 	for rows.Next() {
-		var i Profile
+		var i GetAllTeamMembersRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Tokenid,
@@ -61,6 +75,7 @@ func (q *Queries) GetAllTeamMembers(ctx context.Context, team uuid.UUID) ([]Prof
 			&i.Verified,
 			&i.Createdat,
 			&i.Updatedat,
+			&i.Admin,
 		); err != nil {
 			return nil, err
 		}
@@ -87,6 +102,34 @@ type GetTeamMemberParams struct {
 
 func (q *Queries) GetTeamMember(ctx context.Context, arg GetTeamMemberParams) (Teammember, error) {
 	row := q.db.QueryRow(ctx, getTeamMember, arg.Team, arg.Profile)
+	var i Teammember
+	err := row.Scan(
+		&i.Team,
+		&i.Profile,
+		&i.Admin,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}
+
+const updateTeamMember = `-- name: UpdateTeamMember :one
+UPDATE teamMember
+SET admin = $1,
+    updatedAt = now()
+WHERE team = $2
+    AND profile = $3
+RETURNING team, profile, admin, createdat, updatedat
+`
+
+type UpdateTeamMemberParams struct {
+	Admin   bool      `json:"admin"`
+	Team    uuid.UUID `json:"team"`
+	Profile uuid.UUID `json:"profile"`
+}
+
+func (q *Queries) UpdateTeamMember(ctx context.Context, arg UpdateTeamMemberParams) (Teammember, error) {
+	row := q.db.QueryRow(ctx, updateTeamMember, arg.Admin, arg.Team, arg.Profile)
 	var i Teammember
 	err := row.Scan(
 		&i.Team,

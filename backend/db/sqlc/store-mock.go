@@ -9,14 +9,19 @@ import (
 type mockStore struct {
 }
 
+// GetAllTeamMembers implements Store.
+func (*mockStore) GetAllTeamMembers(ctx context.Context, team uuid.UUID) ([]GetAllTeamMembersRow, error) {
+	return nil, nil
+}
+
+// UpdateTeamMember implements Store.
+func (*mockStore) UpdateTeamMember(ctx context.Context, arg UpdateTeamMemberParams) (Teammember, error) {
+	return Teammember{}, nil
+}
+
 // GetTeamOrganisation implements Store.
 func (*mockStore) GetTeamOrganisation(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
 	return uuid.Nil, nil
-}
-
-// GetAllTeamMembers implements Store.
-func (*mockStore) GetAllTeamMembers(ctx context.Context, team uuid.UUID) ([]Profile, error) {
-	return nil, nil
 }
 
 // GetTeamMember implements Store.

@@ -29,6 +29,7 @@ func TestRoutes(t *testing.T) {
 
 		{Path: "/team-member/", Method: "POST"},
 		{Path: "/team-member/{team-id}", Method: "GET"},
+		{Path: "/team-member/", Method: "PUT"},
 	}
 
 	for _, apiRoute := range apiRoutes {

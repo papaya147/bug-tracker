@@ -49,6 +49,7 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 	for _, member := range profiles {
 		response = append(response, profileResponse{
 			Id:        member.ID,
+			Admin:     member.Admin,
 			Name:      member.Name,
 			Email:     member.Email,
 			Verified:  member.Verified,
