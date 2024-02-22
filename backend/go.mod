@@ -4,7 +4,6 @@ go 1.20
 
 require (
 	aidanwoods.dev/go-paseto v1.5.1
-	github.com/danielgtaylor/huma/v2 v2.5.0
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/render v1.0.3
@@ -17,20 +16,13 @@ require (
 )
 
 require (
-	github.com/danielgtaylor/casing v1.0.0 // indirect
-	github.com/fxamacker/cbor/v2 v2.5.0 // indirect
-	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/spf13/cobra v1.8.0 // indirect
-	github.com/x448/float16 v0.8.4 // indirect
-)
-
-require (
 	aidanwoods.dev/go-result v0.1.0 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
