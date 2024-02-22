@@ -15,5 +15,5 @@ func TestCreate(t *testing.T) {
 		"password": "some password",
 	}
 	body, _ := json.Marshal(postBody)
-	test.TestCase(t, "POST", "/", testHandler.create, body, http.StatusOK)
+	test.TestCase(t, "POST", "/", testHandler.createHandler, body, http.StatusOK)
 }

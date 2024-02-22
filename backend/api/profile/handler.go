@@ -24,7 +24,7 @@ func NewHandler(config *util.Config, store db.Store, maker token.Maker) *Handler
 func (handler *Handler) Routes() *chi.Mux {
 	router := chi.NewMux()
 
-	router.Post("/", handler.create)
+	router.Post("/", handler.createHandler)
 	router.Get("/verify", handler.verify)
 	router.Post("/login", handler.login)
 	router.Get("/password/forgot", handler.forgotPassword)

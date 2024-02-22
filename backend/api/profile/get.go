@@ -26,7 +26,7 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, profileResponse{
+	util.WriteJson(w, http.StatusOK, ProfileOutput{
 		Id:        profile.ID,
 		Name:      profile.Name,
 		Email:     profile.Email,

@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -10,51 +11,55 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
-func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
-	var requestPayload createProfileRequest
-	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
+func (handler *Handler) createHandler(w http.ResponseWriter, r *http.Request) {
+	var req CreateProfileInput
+	if err := util.ReadJsonAndValidate(w, r, &req); err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
 	}
 
+	res, err := handler.Create(r.Context(), &req)
+	if err != nil {
+		util.NewErrorAndWrite(w, err)
+		return
+	}
+
+	util.WriteJson(w, http.StatusOK, res)
+}
+
+func (handler *Handler) Create(ctx context.Context, req *CreateProfileInput) (*ProfileOutput, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
-		util.NewErrorAndWrite(w, util.ErrInternal)
-		return
+		return nil, util.ErrInternal
 	}
 
 	tokenId, err := uuid.NewRandom()
 	if err != nil {
-		util.NewErrorAndWrite(w, util.ErrInternal)
-		return
+		return nil, util.ErrInternal
 	}
 
-	hashedPassword, err := util.HashPassword(requestPayload.Password)
+	hashedPassword, err := util.HashPassword(req.Password)
 	if err != nil {
-		util.NewErrorAndWrite(w, util.ErrInternal)
-		return
+		return nil, util.ErrInternal
 	}
 
-	profile, err := handler.store.CreateProfile(r.Context(), db.CreateProfileParams{
+	profile, err := handler.store.CreateProfile(ctx, db.CreateProfileParams{
 		ID:       id,
 		Tokenid:  tokenId,
-		Name:     requestPayload.Name,
-		Email:    requestPayload.Email,
+		Name:     req.Name,
+		Email:    req.Email,
 		Password: hashedPassword,
 	})
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
-			util.NewErrorAndWrite(w, util.ErrEmailExists)
-			return
+			return nil, util.ErrEmailExists
 		}
-		util.NewErrorAndWrite(w, util.ErrDatabase)
-		return
+		return nil, util.ErrDatabase
 	}
 
-	accessToken, err := handler.tokenMaker.CreateToken(r.Context(), profile.ID, profile.Tokenid, token.EmailToken, handler.config.EMAIL_DURATION)
+	accessToken, err := handler.tokenMaker.CreateToken(ctx, profile.ID, profile.Tokenid, token.EmailToken, handler.config.EMAIL_DURATION)
 	if err != nil {
-		util.NewErrorAndWrite(w, util.ErrInternal)
-		return
+		return nil, util.ErrInternal
 	}
 
 	go util.SendMail(util.SendMailArgs{
@@ -71,12 +76,12 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 		EmailHostPort: handler.config.EMAIL_HOST_PORT,
 	})
 
-	util.WriteJson(w, http.StatusOK, profileResponse{
+	return &ProfileOutput{
 		Id:        profile.ID,
 		Name:      profile.Name,
 		Email:     profile.Email,
 		Verified:  profile.Verified,
 		CreatedAt: profile.Createdat.Unix(),
 		UpdatedAt: profile.Updatedat.Unix(),
-	})
+	}, nil
 }
