@@ -11,13 +11,13 @@ import (
 func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	var requestPayload transferRequest
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
@@ -26,7 +26,7 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 		ToEmail:     requestPayload.Email,
 	})
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 

@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -11,17 +12,17 @@ import (
 func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	profile, err := handler.store.GetProfile(r.Context(), payload.UserId)
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrProfileNotFound)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrProfileNotFound)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 

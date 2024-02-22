@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -19,7 +20,7 @@ func (store *sqlStore) CreateOrganisationTransferTx(ctx context.Context, arg Cre
 	err := store.execTx(ctx, func(q *Queries) error {
 		toProfile, err := q.GetProfileByEmail(ctx, arg.ToEmail)
 		if err != nil {
-			if err == pgx.ErrNoRows {
+			if errors.Is(err, pgx.ErrNoRows) {
 				return util.ErrProfileNotFound
 			}
 			return util.ErrDatabase
@@ -31,7 +32,7 @@ func (store *sqlStore) CreateOrganisationTransferTx(ctx context.Context, arg Cre
 
 		org, err := q.GetOrganisation(ctx, arg.FromProfile)
 		if err != nil {
-			if err == pgx.ErrNoRows {
+			if errors.Is(err, pgx.ErrNoRows) {
 				return util.ErrEntityDoesNotExist
 			}
 			return util.ErrDatabase

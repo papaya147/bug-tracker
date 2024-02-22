@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -11,33 +12,33 @@ func (handler *Handler) verify(w http.ResponseWriter, r *http.Request) {
 	token := r.URL.Query().Get("token")
 	payload, err := handler.tokenMaker.VerifyToken(r.Context(), token)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	profile, err := handler.store.GetProfile(r.Context(), payload.UserId)
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrProfileNotFound)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrProfileNotFound)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 
 	if profile.Verified {
-		util.ErrorJson(w, util.ErrProfileAlreadyVerified)
+		util.NewErrorAndWrite(w, util.ErrProfileAlreadyVerified)
 		return
 	}
 
 	if profile.Tokenid != payload.TokenId {
-		util.ErrorJson(w, util.ErrInvalidToken)
+		util.NewErrorAndWrite(w, util.ErrInvalidToken)
 		return
 	}
 
 	profile, err = handler.store.VerifyProfile(r.Context(), payload.UserId)
 	if err != nil {
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 

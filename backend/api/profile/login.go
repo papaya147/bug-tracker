@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -13,13 +14,13 @@ import (
 func (handler *Handler) login(w http.ResponseWriter, r *http.Request) {
 	var requestPayload loginRequest
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	tokenId, err := uuid.NewRandom()
 	if err != nil {
-		util.ErrorJson(w, util.ErrInternal)
+		util.NewErrorAndWrite(w, util.ErrInternal)
 		return
 	}
 
@@ -28,22 +29,22 @@ func (handler *Handler) login(w http.ResponseWriter, r *http.Request) {
 		Email:   requestPayload.Email,
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrProfileNotFound)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrProfileNotFound)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 
 	if err := util.ValidatePassword(requestPayload.Password, profile.Password); err != nil {
-		util.ErrorJson(w, util.ErrWrongPassword)
+		util.NewErrorAndWrite(w, util.ErrWrongPassword)
 		return
 	}
 
 	token, err := handler.tokenMaker.CreateToken(r.Context(), profile.ID, profile.Tokenid, token.AccessToken, handler.config.SESSION_DURATION)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 

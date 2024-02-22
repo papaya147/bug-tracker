@@ -2,6 +2,7 @@ package token
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -18,12 +19,12 @@ func Middleware(tokenMaker Maker, store db.Store) func(http.Handler) http.Handle
 		fn := func(w http.ResponseWriter, r *http.Request) {
 			auth := r.Header.Get("Authorization")
 			if auth == "" {
-				util.ErrorJson(w, util.ErrInvalidToken)
+				util.NewErrorAndWrite(w, util.ErrInvalidToken)
 				return
 			}
 
 			if len(auth) <= len("Bearer ") {
-				util.ErrorJson(w, util.ErrInvalidToken)
+				util.NewErrorAndWrite(w, util.ErrInvalidToken)
 				return
 			}
 
@@ -32,22 +33,22 @@ func Middleware(tokenMaker Maker, store db.Store) func(http.Handler) http.Handle
 
 			payload, err := tokenMaker.VerifyToken(r.Context(), auth)
 			if err != nil {
-				util.ErrorJson(w, err)
+				util.NewErrorAndWrite(w, err)
 				return
 			}
 
 			profile, err := store.GetProfile(r.Context(), payload.UserId)
 			if err != nil {
-				if err == pgx.ErrNoRows {
-					util.ErrorJson(w, util.ErrProfileNotFound)
+				if errors.Is(err, pgx.ErrNoRows) {
+					util.NewErrorAndWrite(w, util.ErrProfileNotFound)
 					return
 				}
-				util.ErrorJson(w, util.ErrDatabase)
+				util.NewErrorAndWrite(w, util.ErrDatabase)
 				return
 			}
 
 			if profile.Tokenid != payload.TokenId {
-				util.ErrorJson(w, util.ErrInvalidToken)
+				util.NewErrorAndWrite(w, util.ErrInvalidToken)
 				return
 			}
 

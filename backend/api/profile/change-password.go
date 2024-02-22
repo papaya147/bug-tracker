@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -13,34 +14,34 @@ import (
 func (handler *Handler) changePassword(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	var requestPayload changePasswordRequest
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	profile, err := handler.store.GetProfile(r.Context(), payload.UserId)
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrProfileNotFound)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrProfileNotFound)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 
 	if err := util.ValidatePassword(requestPayload.OldPassword, profile.Password); err != nil {
-		util.ErrorJson(w, util.ErrWrongPassword)
+		util.NewErrorAndWrite(w, util.ErrWrongPassword)
 		return
 	}
 
 	hashedNewPass, err := util.HashPassword(requestPayload.NewPassword)
 	if err != nil {
-		util.ErrorJson(w, util.ErrInternal)
+		util.NewErrorAndWrite(w, util.ErrInternal)
 		return
 	}
 
@@ -50,7 +51,7 @@ func (handler *Handler) changePassword(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		log.Println(err)
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 

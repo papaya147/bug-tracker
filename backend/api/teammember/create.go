@@ -1,6 +1,7 @@
 package teammember
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -12,13 +13,13 @@ import (
 func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	var requestPayload createTeamMemberRequest
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
@@ -27,26 +28,26 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 		Profile: payload.UserId,
 	})
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrUnauthorised)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrUnauthorised)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 
 	if !member.Admin {
-		util.ErrorJson(w, util.ErrUnauthorised)
+		util.NewErrorAndWrite(w, util.ErrUnauthorised)
 		return
 	}
 
 	profile, err := handler.store.GetProfileByEmail(r.Context(), requestPayload.Email)
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrProfileNotFound)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrProfileNotFound)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 
@@ -57,10 +58,10 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
-			util.ErrorJson(w, util.ErrTeamMemberAlreadyExists)
+			util.NewErrorAndWrite(w, util.ErrTeamMemberAlreadyExists)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 

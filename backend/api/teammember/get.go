@@ -1,6 +1,7 @@
 package teammember
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -14,7 +15,7 @@ import (
 func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
@@ -23,7 +24,7 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := util.ValidateRequest(requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
@@ -31,17 +32,17 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 		Team:    uuid.MustParse(requestPayload.Id),
 		Profile: payload.UserId,
 	}); err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrUnauthorised)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrUnauthorised)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 
 	profiles, err := handler.store.GetAllTeamMembers(r.Context(), uuid.MustParse(requestPayload.Id))
 	if err != nil {
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 

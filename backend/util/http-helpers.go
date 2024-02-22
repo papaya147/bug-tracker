@@ -7,14 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"reflect"
 )
-
-type jsonResponse struct {
-	Error   bool   `json:"error"`
-	Message string `json:"message"`
-	Data    any    `json:"data,omitempty"`
-}
 
 // ReadJsonAndValidate reads JSON from the request body and validates it.
 func ReadJsonAndValidate(w http.ResponseWriter, r *http.Request, data any) error {
@@ -38,9 +31,7 @@ func readJsonFromBody(w http.ResponseWriter, r *http.Request, data any) error {
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(data)
 	if err != nil {
-		log.Println(err)
-		log.Println(reflect.TypeOf(err))
-		return err
+		return errors.New("json improperly formatted or data types do not match")
 	}
 
 	err = dec.Decode(&struct{}{})
@@ -87,15 +78,11 @@ func WriteJson(w http.ResponseWriter, status int, data any, headers ...http.Head
 }
 
 // ErrorJson returns an error in JSON format.
-func ErrorJson(w http.ResponseWriter, err error) {
-	var payload jsonResponse
-	payload.Error = true
-	payload.Message = err.Error()
-
-	statusCode, exists := CustomErrors[err]
-	if exists {
-		WriteJson(w, statusCode, payload)
-		return
+func ErrorJson(w http.ResponseWriter, err error) error {
+	if converted, ok := err.(*ErrorModel); ok {
+		WriteJson(w, converted.Status, converted)
+		return nil
+	} else {
+		return errors.New("error is not of type error model")
 	}
-	WriteJson(w, http.StatusBadRequest, payload)
 }

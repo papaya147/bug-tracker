@@ -12,19 +12,19 @@ import (
 func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	var requestPayload createOrganisationRequest
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	orgId, err := uuid.NewV7()
 	if err != nil {
-		util.ErrorJson(w, util.ErrInternal)
+		util.NewErrorAndWrite(w, util.ErrInternal)
 		return
 	}
 
@@ -36,11 +36,11 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
-			util.ErrorJson(w, util.ErrEntityExists)
+			util.NewErrorAndWrite(w, util.ErrEntityExists)
 			return
 		}
 
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 

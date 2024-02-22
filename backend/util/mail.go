@@ -3,6 +3,7 @@ package util
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net/smtp"
 	"text/template"
 )
@@ -18,10 +19,11 @@ type SendMailArgs struct {
 	EmailHostPort int
 }
 
-func SendMail(args SendMailArgs) error {
+func SendMail(args SendMailArgs) {
 	body, err := parseTemplate(args.TemplatePath, args.TemplateData)
 	if err != nil {
-		return err
+		log.Println(err)
+		return
 	}
 
 	msg := "From: " + args.From + "\r\n" +
@@ -32,7 +34,9 @@ func SendMail(args SendMailArgs) error {
 		body
 
 	auth := smtp.PlainAuth("", args.From, args.Password, args.EmailHost)
-	return smtp.SendMail(fmt.Sprintf("%s:%d", args.EmailHost, args.EmailHostPort), auth, args.From, []string{args.To}, []byte(msg))
+	if err := smtp.SendMail(fmt.Sprintf("%s:%d", args.EmailHost, args.EmailHostPort), auth, args.From, []string{args.To}, []byte(msg)); err != nil {
+		log.Println(err)
+	}
 }
 
 func parseTemplate(templatePath string, data any) (string, error) {

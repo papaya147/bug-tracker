@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -32,7 +33,7 @@ func (store *sqlStore) CompleteOrganisationTransferTx(ctx context.Context, arg C
 			Toprofile: arg.ToProfile,
 		})
 		if err != nil {
-			if err == pgx.ErrNoRows {
+			if errors.Is(err, pgx.ErrNoRows) {
 				return util.ErrEntityDoesNotExist
 			}
 			return util.ErrDatabase

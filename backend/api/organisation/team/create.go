@@ -2,6 +2,7 @@ package team
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -14,29 +15,29 @@ import (
 func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	var requestPayload createTeamRequest
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	org, err := handler.store.GetOrganisation(r.Context(), payload.UserId)
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrEntityDoesNotExist)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrEntityDoesNotExist)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 
 	teamId, err := uuid.NewV7()
 	if err != nil {
-		util.ErrorJson(w, util.ErrInternal)
+		util.NewErrorAndWrite(w, util.ErrInternal)
 		return
 	}
 
@@ -48,10 +49,10 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
-			util.ErrorJson(w, util.ErrEntityExists)
+			util.NewErrorAndWrite(w, util.ErrEntityExists)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 

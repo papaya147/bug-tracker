@@ -1,6 +1,7 @@
 package transfer
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -15,7 +16,7 @@ import (
 func (handler *Handler) response(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
 	if err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
@@ -25,7 +26,7 @@ func (handler *Handler) response(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := util.ValidateRequest(requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
@@ -36,16 +37,16 @@ func (handler *Handler) response(w http.ResponseWriter, r *http.Request) {
 			TransferId: uuid.MustParse(requestPayload.Id),
 			ToProfile:  payload.UserId,
 		}); err != nil {
-			util.ErrorJson(w, err)
+			util.NewErrorAndWrite(w, err)
 			return
 		}
 	} else {
 		if _, err = handler.store.DeleteOrganisationTransfer(r.Context(), uuid.MustParse(requestPayload.Id)); err != nil {
-			if err == pgx.ErrNoRows {
-				util.ErrorJson(w, util.ErrEntityDoesNotExist)
+			if errors.Is(err, pgx.ErrNoRows) {
+				util.NewErrorAndWrite(w, util.ErrEntityDoesNotExist)
 				return
 			}
-			util.ErrorJson(w, util.ErrDatabase)
+			util.NewErrorAndWrite(w, util.ErrDatabase)
 			return
 		}
 	}

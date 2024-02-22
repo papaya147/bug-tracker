@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -12,23 +13,23 @@ import (
 func (handler *Handler) forgotPassword(w http.ResponseWriter, r *http.Request) {
 	var requestPayload forgotEmailRequest
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
-		util.ErrorJson(w, err)
+		util.NewErrorAndWrite(w, err)
 		return
 	}
 
 	profile, err := handler.store.GetProfileByEmail(r.Context(), requestPayload.Email)
 	if err != nil {
-		if err == pgx.ErrNoRows {
-			util.ErrorJson(w, util.ErrProfileNotFound)
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrProfileNotFound)
 			return
 		}
-		util.ErrorJson(w, util.ErrDatabase)
+		util.NewErrorAndWrite(w, util.ErrDatabase)
 		return
 	}
 
 	token, err := handler.tokenMaker.CreateToken(r.Context(), profile.ID, profile.Tokenid, token.PasswordToken, handler.config.EMAIL_DURATION)
 	if err != nil {
-		util.ErrorJson(w, util.ErrInternal)
+		util.NewErrorAndWrite(w, util.ErrInternal)
 		return
 	}
 
