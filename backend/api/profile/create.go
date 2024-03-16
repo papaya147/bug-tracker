@@ -1,7 +1,6 @@
 package profile
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -11,39 +10,43 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
-func (handler *Handler) createHandler(w http.ResponseWriter, r *http.Request) {
-	var req CreateProfileInput
+// create godoc
+// @Summary      Create a new profile, emails must be unique.
+// @Description  Create a new profile by giving a profile name, email and password. This API will generate a verification email which will contain a redirect link.
+// @Tags         profile
+// @Accept       json
+// @Produce      json
+// @Param 		 input body createProfileInput true "json"
+// @Success      200  {object}  profileOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /profile [post]
+func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
+	var req createProfileInput
 	if err := util.ReadJsonAndValidate(w, r, &req); err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
 	}
 
-	res, err := handler.Create(r.Context(), &req)
-	if err != nil {
-		util.NewErrorAndWrite(w, err)
-		return
-	}
-
-	util.WriteJson(w, http.StatusOK, res)
-}
-
-func (handler *Handler) Create(ctx context.Context, req *CreateProfileInput) (*ProfileOutput, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
-		return nil, util.ErrInternal
+		util.NewErrorAndWrite(w, util.ErrInternal)
 	}
 
 	tokenId, err := uuid.NewRandom()
 	if err != nil {
-		return nil, util.ErrInternal
+		util.NewErrorAndWrite(w, util.ErrInternal)
+		return
 	}
 
 	hashedPassword, err := util.HashPassword(req.Password)
 	if err != nil {
-		return nil, util.ErrInternal
+		util.NewErrorAndWrite(w, util.ErrInternal)
+		return
 	}
 
-	profile, err := handler.store.CreateProfile(ctx, db.CreateProfileParams{
+	profile, err := handler.store.CreateProfile(r.Context(), db.CreateProfileParams{
 		ID:       id,
 		Tokenid:  tokenId,
 		Name:     req.Name,
@@ -52,14 +55,17 @@ func (handler *Handler) Create(ctx context.Context, req *CreateProfileInput) (*P
 	})
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
-			return nil, util.ErrEmailExists
+			util.NewErrorAndWrite(w, util.ErrEmailExists)
+			return
 		}
-		return nil, util.ErrDatabase
+		util.NewErrorAndWrite(w, util.ErrDatabase)
+		return
 	}
 
-	accessToken, err := handler.tokenMaker.CreateToken(ctx, profile.ID, profile.Tokenid, token.EmailToken, handler.config.EMAIL_DURATION)
+	accessToken, err := handler.tokenMaker.CreateToken(r.Context(), profile.ID, profile.Tokenid, token.EmailToken, handler.config.EMAIL_DURATION)
 	if err != nil {
-		return nil, util.ErrInternal
+		util.NewErrorAndWrite(w, util.ErrInternal)
+		return
 	}
 
 	go util.SendMail(util.SendMailArgs{
@@ -70,18 +76,18 @@ func (handler *Handler) Create(ctx context.Context, req *CreateProfileInput) (*P
 		TemplatePath: "./verification-email.html",
 		TemplateData: map[string]interface{}{
 			"Name": profile.Name,
-			"Link": fmt.Sprintf("%s/api/v%d/profile/verify?token=%s", handler.config.API_PREFIX, handler.config.API_VERSION, accessToken),
+			"Link": fmt.Sprintf("%s/api/v%s/profile/verify?token=%s", handler.config.API_PREFIX, handler.config.API_VERSION, accessToken),
 		},
 		EmailHost:     handler.config.EMAIL_HOST,
 		EmailHostPort: handler.config.EMAIL_HOST_PORT,
 	})
 
-	return &ProfileOutput{
+	util.WriteJson(w, http.StatusOK, profileOutput{
 		Id:        profile.ID,
 		Name:      profile.Name,
 		Email:     profile.Email,
 		Verified:  profile.Verified,
 		CreatedAt: profile.Createdat.Unix(),
 		UpdatedAt: profile.Updatedat.Unix(),
-	}, nil
+	})
 }

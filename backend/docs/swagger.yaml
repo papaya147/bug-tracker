@@ -1,0 +1,880 @@
+basePath: /api/v1
+definitions:
+  db.GetOrganisationTransfersTxResponse:
+    properties:
+      incoming_transfers:
+        items:
+          $ref: '#/definitions/db.IncomingTransfer'
+        type: array
+      outgoing_transfer:
+        $ref: '#/definitions/db.OutgoingTransfer'
+    type: object
+  db.IncomingTransfer:
+    properties:
+      created_at:
+        type: integer
+      from_profile_name:
+        type: string
+      id:
+        type: string
+      organisation_description:
+        type: string
+      organisation_name:
+        type: string
+    type: object
+  db.OutgoingTransfer:
+    properties:
+      created_at:
+        type: integer
+      id:
+        type: string
+      organisation_description:
+        type: string
+      organisation_name:
+        type: string
+      to_profile_name:
+        type: string
+    type: object
+  organisation.createOrganisationInput:
+    properties:
+      description:
+        example: The organisation for bugs!
+        maxLength: 100
+        type: string
+      name:
+        example: buggy org
+        maxLength: 20
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  organisation.organisationOutput:
+    properties:
+      created_at:
+        example: 1710579130
+        type: integer
+      description:
+        example: The organisation for bugs!
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      name:
+        example: buggy org
+        type: string
+      owner:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      updated_at:
+        example: 1710579130
+        type: integer
+    type: object
+  profile.changePasswordInput:
+    properties:
+      new_password:
+        example: something1234
+        maxLength: 32
+        minLength: 8
+        type: string
+      old_password:
+        example: something123
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  profile.createProfileInput:
+    properties:
+      email:
+        example: asrivatsa6@gmail.com
+        maxLength: 32
+        type: string
+      name:
+        example: abhinav
+        maxLength: 32
+        type: string
+      password:
+        example: something123
+        maxLength: 32
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  profile.loginInput:
+    properties:
+      email:
+        example: asrivatsa6@gmail.com
+        type: string
+      password:
+        example: something123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  profile.profileOutput:
+    properties:
+      created_at:
+        example: 1710579130
+        type: integer
+      email:
+        example: asrivatsa6@gmail.com
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      name:
+        example: abhinav
+        type: string
+      updated_at:
+        example: 1710579130
+        type: integer
+      verified:
+        example: false
+        type: boolean
+    type: object
+  team.createTeamInput:
+    properties:
+      description:
+        example: The Buggy testing team!
+        maxLength: 100
+        type: string
+      name:
+        example: testing team
+        maxLength: 20
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  team.teamOutput:
+    properties:
+      created_at:
+        example: 1710579130
+        type: integer
+      description:
+        example: The Buggy testing team!
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      name:
+        example: testing team
+        type: string
+      organisation_description:
+        example: The organisation for bugs!
+        type: string
+      organisation_name:
+        example: buggy org
+        type: string
+      updated_at:
+        example: 1710579130
+        type: integer
+    type: object
+  teammember.createTeamMemberInput:
+    properties:
+      admin:
+        example: false
+        type: boolean
+      email:
+        example: asrivatsa6@gmail.com
+        type: string
+      team_id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+    required:
+    - email
+    - team_id
+    type: object
+  teammember.profileOutput:
+    properties:
+      admin:
+        example: false
+        type: boolean
+      created_at:
+        example: 1710579130
+        type: integer
+      email:
+        example: asrivatsa6@gmail.com
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      name:
+        example: abhinav
+        type: string
+      updated_at:
+        example: 1710579130
+        type: integer
+      verified:
+        example: true
+        type: boolean
+    type: object
+  teammember.teamMemberOutput:
+    properties:
+      admin:
+        example: false
+        type: boolean
+      created_at:
+        example: 1710579130
+        type: integer
+      profile_id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      team_id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      updated_at:
+        example: 1710579130
+        type: integer
+    type: object
+  teammember.updateTeamMemberInput:
+    properties:
+      admin:
+        example: false
+        type: boolean
+      profile_id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      team_id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+    required:
+    - profile_id
+    - team_id
+    type: object
+  transfer.transferInput:
+    properties:
+      email:
+        example: asrivatsa6@gmail.com
+        type: string
+    required:
+    - email
+    type: object
+  transfer.transferOutput:
+    properties:
+      completed:
+        example: false
+        type: boolean
+      created_at:
+        example: 1710579130
+        type: integer
+      from_profile:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      organisation:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      to_profile:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+    type: object
+  util.ErrorDetail:
+    properties:
+      location:
+        type: string
+      message:
+        type: string
+      value: {}
+    type: object
+  util.ErrorModel:
+    properties:
+      detail:
+        type: string
+      errors:
+        items:
+          $ref: '#/definitions/util.ErrorDetail'
+        type: array
+      instance:
+        type: string
+      status:
+        type: integer
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+host: localhost:4000
+info:
+  contact: {}
+  description: The comprehensive list of all Buggy APIs
+  title: Buggy APIs
+  version: "1.0"
+paths:
+  /organisation:
+    get:
+      description: Get an organisation, this API will return an error if the organisation
+        does not exist.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/organisation.organisationOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get an organisation.
+      tags:
+      - organisation
+    post:
+      consumes:
+      - application/json
+      description: Create a new organisation, each profile may only have one organisation.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/organisation.createOrganisationInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/organisation.organisationOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Create a new organisation.
+      tags:
+      - organisation
+    put:
+      consumes:
+      - application/json
+      description: Update an organisations name or description.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/organisation.createOrganisationInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/organisation.organisationOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Update an organisations name or description.
+      tags:
+      - organisation
+  /organisation/team:
+    get:
+      description: Get all teams under a profile's organisation.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/team.teamOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get all teams under a profile's organisation.
+      tags:
+      - organisation
+    post:
+      consumes:
+      - application/json
+      description: Create a new team under a profile's organisation.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/team.createTeamInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/team.teamOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Create a new team under a profile's organisation.
+      tags:
+      - organisation
+  /organisation/team/{team-id}:
+    put:
+      description: Update a team under a profile's organisation.
+      parameters:
+      - description: Team ID
+        in: path
+        name: team-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/team.teamOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Update a team under a profile's organisation.
+      tags:
+      - organisation
+  /organisation/transfer:
+    get:
+      description: Get all incoming and outgoing organisation transfers.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.GetOrganisationTransfersTxResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get all organisation transfers.
+      tags:
+      - organisation
+    post:
+      consumes:
+      - application/json
+      description: Create a new organisational transfer.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/transfer.transferInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/transfer.transferOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Create a new organisational transfer.
+      tags:
+      - organisation
+  /organisation/transfer/{organisation-transfer-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an organisational transfer.
+      parameters:
+      - description: Organisation Transfer ID
+        in: path
+        name: organisation-transfer-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/transfer.transferOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Delete an organisational transfer.
+      tags:
+      - organisation
+  /organisation/transfer/reponse/{organisation-transfer-id}:
+    get:
+      description: Respond to an organisation transfer.
+      parameters:
+      - description: Organisation Transfer ID
+        in: path
+        name: organisation-transfer-id
+        required: true
+        type: string
+      - description: Status
+        in: query
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Respond to an organisation transfer.
+      tags:
+      - organisation
+  /profile:
+    get:
+      description: Get a profile from a token.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/profile.profileOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get a profile from a token.
+      tags:
+      - profile
+    post:
+      consumes:
+      - application/json
+      description: Create a new profile by giving a profile name, email and password.
+        This API will generate a verification email which will contain a redirect
+        link.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/profile.createProfileInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/profile.profileOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Create a new profile, emails must be unique.
+      tags:
+      - profile
+  /profile/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with email and password. Only verified users can login.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/profile.loginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/profile.profileOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Login with email and password.
+      tags:
+      - profile
+  /profile/password/change:
+    post:
+      consumes:
+      - application/json
+      description: Change a profile password using the old password for confirmation.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/profile.changePasswordInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/profile.profileOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Change a profile password.
+      tags:
+      - profile
+  /profile/verify:
+    get:
+      description: Verify a profile. This link will only come from emails.
+      parameters:
+      - description: string
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/profile.profileOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Verify a profile.
+      tags:
+      - profile
+  /team-member:
+    post:
+      consumes:
+      - application/json
+      description: Create a new team member. The profile and team has to exist already
+        to add a member. The profile making this request must be an admin for the
+        team already.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/teammember.createTeamMemberInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/teammember.teamMemberOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Create a new team member.
+      tags:
+      - team-member
+    put:
+      consumes:
+      - application/json
+      description: Update a team members permissions.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/teammember.updateTeamMemberInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/teammember.teamMemberOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Update a team members permissions.
+      tags:
+      - team-member
+  /team-member/{team-id}:
+    get:
+      description: Get all team members.
+      parameters:
+      - description: Team ID
+        in: path
+        name: team-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/teammember.profileOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get all team members.
+      tags:
+      - team-member
+swagger: "2.0"

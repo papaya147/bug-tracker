@@ -7,11 +7,11 @@ import (
 )
 
 type Handler struct {
-	config *util.Config
+	config util.Config
 	store  db.Store
 }
 
-func NewHandler(config *util.Config, store db.Store) *Handler {
+func NewHandler(config util.Config, store db.Store) *Handler {
 	return &Handler{
 		config: config,
 		store:  store,

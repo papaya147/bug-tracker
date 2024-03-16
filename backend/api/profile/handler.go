@@ -8,12 +8,12 @@ import (
 )
 
 type Handler struct {
-	config     *util.Config
+	config     util.Config
 	store      db.Store
 	tokenMaker token.Maker
 }
 
-func NewHandler(config *util.Config, store db.Store, maker token.Maker) *Handler {
+func NewHandler(config util.Config, store db.Store, maker token.Maker) *Handler {
 	return &Handler{
 		store:      store,
 		config:     config,
@@ -24,10 +24,10 @@ func NewHandler(config *util.Config, store db.Store, maker token.Maker) *Handler
 func (handler *Handler) Routes() *chi.Mux {
 	router := chi.NewMux()
 
-	router.Post("/", handler.createHandler)
+	router.Post("/", handler.create)
 	router.Get("/verify", handler.verify)
 	router.Post("/login", handler.login)
-	router.Get("/password/forgot", handler.forgotPassword)
+	// router.Get("/password/forgot", handler.forgotPassword)
 
 	router.Group(func(r chi.Router) {
 		r.Use(token.Middleware(handler.tokenMaker, handler.store))

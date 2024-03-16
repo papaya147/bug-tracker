@@ -133,6 +133,7 @@ var (
 	ErrCannotTransferToSelf    = errors.New("cannot transfer to self")
 	ErrUnauthorised            = errors.New("unauthorised")
 	ErrTeamMemberAlreadyExists = errors.New("team member already exists")
+	ErrInvalidCookie           = errors.New("invalid cookie")
 )
 
 type CustomErrorDetails struct {
@@ -156,4 +157,5 @@ var CustomErrors = map[error]CustomErrorDetails{
 	ErrCannotTransferToSelf:    {Detail: "Cannot transfer to self", Status: http.StatusBadRequest},
 	ErrUnauthorised:            {Detail: "Unauthorised", Status: http.StatusForbidden},
 	ErrTeamMemberAlreadyExists: {Detail: "Team member already exists", Status: http.StatusBadRequest},
+	ErrInvalidCookie:           {Detail: "Invalid cookie", Status: http.StatusBadRequest},
 }

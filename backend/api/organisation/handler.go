@@ -10,14 +10,14 @@ import (
 )
 
 type Handler struct {
-	config          *util.Config
+	config          util.Config
 	store           db.Store
 	tokenMaker      token.Maker
 	transferHandler *transfer.Handler
 	teamHandler     *team.Handler
 }
 
-func NewHandler(config *util.Config, store db.Store, maker token.Maker) *Handler {
+func NewHandler(config util.Config, store db.Store, maker token.Maker) *Handler {
 	return &Handler{
 		config:          config,
 		store:           store,

@@ -12,14 +12,26 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// create godoc
+// @Summary      Create a new team under a profile's organisation.
+// @Description  Create a new team under a profile's organisation.
+// @Tags         organisation
+// @Accept       json
+// @Produce      json
+// @Param 		 input body createTeamInput true "json"
+// @Success      200  {object}  teamOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /organisation/team [post]
 func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
-	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
+	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
 	}
 
-	var requestPayload createTeamRequest
+	var requestPayload createTeamInput
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
@@ -62,7 +74,7 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 		Admin:   true,
 	})
 
-	util.WriteJson(w, http.StatusOK, teamResponse{
+	util.WriteJson(w, http.StatusOK, teamOutput{
 		Id:                      team.ID,
 		OrganisationName:        org.Name,
 		OrganisationDescription: org.Description,

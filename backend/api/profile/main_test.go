@@ -14,6 +14,8 @@ var testHandler *Handler
 func TestMain(m *testing.M) {
 	config := util.NewConfig("../../")
 
+	util.CreateCookieStore(config)
+
 	store := db.NewMockStore()
 
 	maker := token.NewMockMaker()

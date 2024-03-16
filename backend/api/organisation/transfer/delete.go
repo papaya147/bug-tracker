@@ -11,8 +11,20 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// delete godoc
+// @Summary      Delete an organisational transfer.
+// @Description  Delete an organisational transfer.
+// @Tags         organisation
+// @Accept       json
+// @Produce      json
+// @Param 		 organisation-transfer-id path string true "Organisation Transfer ID"
+// @Success      200  {object}  transferOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /organisation/transfer/{organisation-transfer-id} [delete]
 func (handler *Handler) delete(w http.ResponseWriter, r *http.Request) {
-	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
+	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
@@ -47,7 +59,7 @@ func (handler *Handler) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, transferResponse{
+	util.WriteJson(w, http.StatusOK, transferOutput{
 		Id:           transfer.ID,
 		Organisation: transfer.Organisation,
 		FromProfile:  transfer.Fromprofile,

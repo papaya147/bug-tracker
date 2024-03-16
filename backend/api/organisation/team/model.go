@@ -2,21 +2,21 @@ package team
 
 import "github.com/google/uuid"
 
-type createTeamRequest struct {
-	Name        string `json:"name" validate:"required,max=20"`
-	Description string `json:"description" validate:"required,max=100"`
+type createTeamInput struct {
+	Name        string `json:"name" validate:"required,max=20" example:"testing team"`
+	Description string `json:"description" validate:"required,max=100" example:"The Buggy testing team!"`
 }
 
-type teamResponse struct {
-	Id                      uuid.UUID `json:"id"`
-	OrganisationName        string    `json:"organisation_name"`
-	OrganisationDescription string    `json:"organisation_description"`
-	Name                    string    `json:"name"`
-	Description             string    `json:"description"`
-	CreatedAt               int64     `json:"created_at"`
-	UpdatedAt               int64     `json:"updated_at"`
+type teamOutput struct {
+	Id                      uuid.UUID `json:"id" example:"6ba7b810-9dad-11d1-80b4-00c04fd430c8"`
+	OrganisationName        string    `json:"organisation_name" example:"buggy org"`
+	OrganisationDescription string    `json:"organisation_description" example:"The organisation for bugs!"`
+	Name                    string    `json:"name" example:"testing team"`
+	Description             string    `json:"description" example:"The Buggy testing team!"`
+	CreatedAt               int64     `json:"created_at" example:"1710579130"`
+	UpdatedAt               int64     `json:"updated_at" example:"1710579130"`
 }
 
 type teamId struct {
-	Id string `json:"id" validate:"required,uuid"`
+	Id string `json:"id" validate:"required,uuid" example:"6ba7b810-9dad-11d1-80b4-00c04fd430c8"`
 }

@@ -11,14 +11,26 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// changePassword godoc
+// @Summary      Change a profile password.
+// @Description  Change a profile password using the old password for confirmation.
+// @Tags         profile
+// @Accept       json
+// @Produce      json
+// @Param 		 input body changePasswordInput true "json"
+// @Success      200  {object}  profileOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /profile/password/change [post]
 func (handler *Handler) changePassword(w http.ResponseWriter, r *http.Request) {
-	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
+	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
 	}
 
-	var requestPayload changePasswordRequest
+	var requestPayload changePasswordInput
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
@@ -55,7 +67,7 @@ func (handler *Handler) changePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, ProfileOutput{
+	util.WriteJson(w, http.StatusOK, profileOutput{
 		Id:        profile.ID,
 		Name:      profile.Name,
 		Email:     profile.Email,

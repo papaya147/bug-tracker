@@ -2,18 +2,38 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
 
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/papaya147/buggy/backend/api"
 	db "github.com/papaya147/buggy/backend/db/sqlc"
 	"github.com/papaya147/buggy/backend/token"
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// @title Buggy APIs
+// @version 1.0
+// @description The comprehensive list of all Buggy APIs
+// @host localhost:4000
+// @BasePath /api/v1
 func main() {
-	config := util.NewConfig(".")
+	config := util.NewConfig("./")
 
 	postgresConn := util.CreatePostgresPool(config.POSTGRES_DSN)
+	defer postgresConn.Close()
+
+	util.CreateDatabase(postgresConn)
+	util.CreateCookieStore(config)
+
+	log.Print("attempting database migration...")
+	if err := runDbMigration(config); err != nil {
+		log.Println("database migration failed with error:", err)
+	} else {
+		log.Println("database migration was successful!")
+	}
 
 	store := db.NewStore(postgresConn)
 
@@ -26,4 +46,17 @@ func main() {
 
 	log.Println("starting http server on port", config.HTTP_SERVER_PORT)
 	server.Start(config.HTTP_SERVER_PORT)
+}
+
+func runDbMigration(config util.Config) error {
+	migration, err := migrate.New(config.MIGRATION_URL, config.POSTGRES_DSN)
+	if err != nil {
+		return err
+	}
+
+	if err := migration.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		return err
+	}
+
+	return nil
 }

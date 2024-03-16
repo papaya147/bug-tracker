@@ -11,8 +11,20 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// login godoc
+// @Summary      Login with email and password.
+// @Description  Login with email and password. Only verified users can login.
+// @Tags         profile
+// @Accept       json
+// @Produce      json
+// @Param 		 input body loginInput true "json"
+// @Success      200  {object}  profileOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /profile/login [post]
 func (handler *Handler) login(w http.ResponseWriter, r *http.Request) {
-	var requestPayload loginRequest
+	var requestPayload loginInput
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
@@ -48,13 +60,16 @@ func (handler *Handler) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, ProfileOutput{
+	session, _ := util.Store.Get(r, "buggy-session")
+	session.Values["token"] = token
+	session.Save(r, w)
+
+	util.WriteJson(w, http.StatusOK, profileOutput{
 		Id:        profile.ID,
 		Name:      profile.Name,
 		Email:     profile.Email,
 		Verified:  profile.Verified,
 		CreatedAt: profile.Createdat.Unix(),
 		UpdatedAt: profile.Updatedat.Unix(),
-		Token:     token,
 	})
 }

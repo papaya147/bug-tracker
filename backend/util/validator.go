@@ -15,7 +15,7 @@ func ValidateRequest(requestPayload any) error {
 	if err != nil {
 		var errs []*ErrorDetail
 		if _, ok := err.(*validator.InvalidValidationError); ok {
-			return NewError("The request body was not of valid json", errors.New("invalid json"))
+			return NewError("The request input was not of valid json", errors.New("invalid json"))
 		}
 		for _, err := range err.(validator.ValidationErrors) {
 			param = fmt.Sprintf("%s: %s", err.Tag(), err.Param())
@@ -28,7 +28,7 @@ func ValidateRequest(requestPayload any) error {
 				Value:    err.Value(),
 			})
 		}
-		apiError := NewError("The request body did not meet some requirements")
+		apiError := NewError("The request input did not meet some requirements")
 		for _, err := range errs {
 			apiError = apiError.AddError(err)
 		}

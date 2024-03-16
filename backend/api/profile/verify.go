@@ -8,6 +8,17 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// verify godoc
+// @Summary      Verify a profile.
+// @Description  Verify a profile. This link will only come from emails.
+// @Tags         profile
+// @Produce      json
+// @Param 		 token query string true "string"
+// @Success      200  {object}  profileOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /profile/verify [get]
 func (handler *Handler) verify(w http.ResponseWriter, r *http.Request) {
 	token := r.URL.Query().Get("token")
 	payload, err := handler.tokenMaker.VerifyToken(r.Context(), token)
@@ -42,7 +53,7 @@ func (handler *Handler) verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, ProfileOutput{
+	util.WriteJson(w, http.StatusOK, profileOutput{
 		Id:        profile.ID,
 		Name:      profile.Name,
 		Email:     profile.Email,

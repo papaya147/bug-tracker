@@ -13,14 +13,26 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// response godoc
+// @Summary      Respond to an organisation transfer.
+// @Description  Respond to an organisation transfer.
+// @Tags         organisation
+// @Produce      json
+// @Param 		 organisation-transfer-id path string true "Organisation Transfer ID"
+// @Param 		 status query string true "Status"
+// @Success      200  {object}  nil
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /organisation/transfer/reponse/{organisation-transfer-id} [get]
 func (handler *Handler) response(w http.ResponseWriter, r *http.Request) {
-	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
+	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
 	}
 
-	requestPayload := transferResponseStatus{
+	requestPayload := transferResponseInput{
 		Id:     chi.URLParam(r, "organisation-transfer-id"),
 		Status: r.URL.Query().Get("status"),
 	}

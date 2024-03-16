@@ -15,23 +15,16 @@ type TokenPayloadType string
 var TokenPayloadKey TokenPayloadType = "token-payload"
 
 func Middleware(tokenMaker Maker, store db.Store) func(http.Handler) http.Handler {
-	return func(h http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
-			auth := r.Header.Get("Authorization")
-			if auth == "" {
-				util.NewErrorAndWrite(w, util.ErrInvalidToken)
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			sess, _ := util.Store.Get(r, "buggy-session")
+			token, ok := sess.Values["token"].(string)
+			if !ok {
+				util.NewErrorAndWrite(w, util.ErrInvalidCookie)
 				return
 			}
 
-			if len(auth) <= len("Bearer ") {
-				util.NewErrorAndWrite(w, util.ErrInvalidToken)
-				return
-			}
-
-			bearer := "Bearer "
-			auth = auth[len(bearer):]
-
-			payload, err := tokenMaker.VerifyToken(r.Context(), auth)
+			payload, err := tokenMaker.VerifyToken(r.Context(), token)
 			if err != nil {
 				util.NewErrorAndWrite(w, err)
 				return
@@ -54,13 +47,12 @@ func Middleware(tokenMaker Maker, store db.Store) func(http.Handler) http.Handle
 
 			ctx := context.WithValue(r.Context(), TokenPayloadKey, *payload)
 			r = r.WithContext(ctx)
-			h.ServeHTTP(w, r)
-		}
-		return http.HandlerFunc(fn)
+			next.ServeHTTP(w, r)
+		})
 	}
 }
 
-func GetTokenPayloadFromContext(ctx context.Context, tokenType TokenType) (Payload, error) {
+func GetTokenDetail(ctx context.Context, tokenType TokenType) (Payload, error) {
 	tokenPayload := ctx.Value(TokenPayloadKey).(Payload)
 	if tokenPayload.TokenType != tokenType {
 		return Payload{}, util.ErrInvalidToken

@@ -16,7 +16,7 @@ type SendMailArgs struct {
 	TemplatePath  string
 	TemplateData  map[string]interface{}
 	EmailHost     string
-	EmailHostPort int
+	EmailHostPort string
 }
 
 func SendMail(args SendMailArgs) {
@@ -34,7 +34,7 @@ func SendMail(args SendMailArgs) {
 		body
 
 	auth := smtp.PlainAuth("", args.From, args.Password, args.EmailHost)
-	if err := smtp.SendMail(fmt.Sprintf("%s:%d", args.EmailHost, args.EmailHostPort), auth, args.From, []string{args.To}, []byte(msg)); err != nil {
+	if err := smtp.SendMail(fmt.Sprintf("%s:%s", args.EmailHost, args.EmailHostPort), auth, args.From, []string{args.To}, []byte(msg)); err != nil {
 		log.Println(err)
 	}
 }

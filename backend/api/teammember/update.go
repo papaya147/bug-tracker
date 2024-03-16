@@ -10,14 +10,26 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// create godoc
+// @Summary      Update a team members permissions.
+// @Description  Update a team members permissions.
+// @Tags         team-member
+// @Accept       json
+// @Produce      json
+// @Param 		 input body updateTeamMemberInput true "json"
+// @Success      200  {object}  teamMemberOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /team-member [put]
 func (handler *Handler) update(w http.ResponseWriter, r *http.Request) {
-	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
+	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
 	}
 
-	var requestPayload updateTeamMemberRequest
+	var requestPayload updateTeamMemberInput
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
@@ -66,7 +78,7 @@ func (handler *Handler) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, teamMemberResponse{
+	util.WriteJson(w, http.StatusOK, teamMemberOutput{
 		TeamId:    member.Team,
 		ProfileId: member.Profile,
 		Admin:     member.Admin,

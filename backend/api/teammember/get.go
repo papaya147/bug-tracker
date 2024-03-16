@@ -12,8 +12,19 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// get godoc
+// @Summary      Get all team members.
+// @Description  Get all team members.
+// @Tags         team-member
+// @Produce      json
+// @Param 		 team-id path string true "Team ID"
+// @Success      200  {object}  []profileOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /team-member/{team-id} [get]
 func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
-	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
+	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
@@ -46,9 +57,9 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var response []profileResponse
+	var response []profileOutput
 	for _, member := range profiles {
-		response = append(response, profileResponse{
+		response = append(response, profileOutput{
 			Id:        member.ID,
 			Admin:     member.Admin,
 			Name:      member.Name,

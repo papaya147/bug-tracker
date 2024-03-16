@@ -5,6 +5,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
+	_ "github.com/papaya147/buggy/backend/docs"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 func (app *server) routes() *chi.Mux {
@@ -30,6 +32,8 @@ func (app *server) routes() *chi.Mux {
 		r.Mount("/organisation", app.organisationHandler.Routes())
 		r.Mount("/team-member", app.teamMemberHandler.Routes())
 	})
+
+	router.Mount("/swagger", httpSwagger.WrapHandler)
 
 	return router
 }

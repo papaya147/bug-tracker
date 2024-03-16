@@ -9,8 +9,18 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// get godoc
+// @Summary      Get a profile from a token.
+// @Description  Get a profile from a token.
+// @Tags         profile
+// @Produce      json
+// @Success      200  {object}  profileOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /profile [get]
 func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
-	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
+	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
@@ -26,7 +36,7 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, ProfileOutput{
+	util.WriteJson(w, http.StatusOK, profileOutput{
 		Id:        profile.ID,
 		Name:      profile.Name,
 		Email:     profile.Email,

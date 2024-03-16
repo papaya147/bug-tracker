@@ -14,7 +14,7 @@ import (
 )
 
 type server struct {
-	config              *util.Config
+	config              util.Config
 	store               db.Store
 	tokenMaker          token.Maker
 	profileHandler      *profile.Handler
@@ -40,9 +40,9 @@ func NewServer(store db.Store, maker token.Maker) *server {
 	return server
 }
 
-func (app *server) Start(port int) error {
+func (app *server) Start(port string) error {
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
+		Addr:    fmt.Sprintf(":%s", port),
 		Handler: app.router,
 	}
 

@@ -10,14 +10,26 @@ import (
 	"github.com/papaya147/buggy/backend/util"
 )
 
+// create godoc
+// @Summary      Create a new team member.
+// @Description  Create a new team member. The profile and team has to exist already to add a member. The profile making this request must be an admin for the team already.
+// @Tags         team-member
+// @Accept       json
+// @Produce      json
+// @Param 		 input body createTeamMemberInput true "json"
+// @Success      200  {object}  teamMemberOutput
+// @Failure      400  {object}  util.ErrorModel
+// @Failure      404  {object}  util.ErrorModel
+// @Failure      500  {object}  util.ErrorModel
+// @Router       /team-member [post]
 func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
-	payload, err := token.GetTokenPayloadFromContext(r.Context(), token.AccessToken)
+	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
 	}
 
-	var requestPayload createTeamMemberRequest
+	var requestPayload createTeamMemberInput
 	if err := util.ReadJsonAndValidate(w, r, &requestPayload); err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
@@ -65,7 +77,7 @@ func (handler *Handler) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, teamMemberResponse{
+	util.WriteJson(w, http.StatusOK, teamMemberOutput{
 		TeamId:    newMember.Team,
 		ProfileId: newMember.Profile,
 		Admin:     newMember.Admin,
