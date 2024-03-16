@@ -163,7 +163,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/team.teamOutput"
+                                "$ref": "#/definitions/github_com_papaya147_buggy_backend_api_organisation_team.teamOutput"
                             }
                         }
                     },
@@ -214,7 +214,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/team.teamOutput"
+                            "$ref": "#/definitions/github_com_papaya147_buggy_backend_api_organisation_team.teamOutput"
                         }
                     },
                     "400": {
@@ -261,7 +261,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/team.teamOutput"
+                            "$ref": "#/definitions/github_com_papaya147_buggy_backend_api_organisation_team.teamOutput"
                         }
                     },
                     "400": {
@@ -713,6 +713,47 @@
                 }
             }
         },
+        "/team": {
+            "get": {
+                "description": "Get all teams for a profile.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "team"
+                ],
+                "summary": "Get all teams for a profile.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_papaya147_buggy_backend_api_team.teamOutput"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/team-member": {
             "put": {
                 "description": "Update a team members permissions.",
@@ -921,6 +962,68 @@
                 }
             }
         },
+        "github_com_papaya147_buggy_backend_api_organisation_team.teamOutput": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "integer",
+                    "example": 1710579130
+                },
+                "description": {
+                    "type": "string",
+                    "example": "The Buggy testing team!"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "testing team"
+                },
+                "organisation_description": {
+                    "type": "string",
+                    "example": "The organisation for bugs!"
+                },
+                "organisation_name": {
+                    "type": "string",
+                    "example": "buggy org"
+                },
+                "updated_at": {
+                    "type": "integer",
+                    "example": 1710579130
+                }
+            }
+        },
+        "github_com_papaya147_buggy_backend_api_team.teamOutput": {
+            "type": "object",
+            "properties": {
+                "admin": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "description": {
+                    "type": "string",
+                    "example": "The Buggy testing team!"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "testing team"
+                },
+                "organisation_description": {
+                    "type": "string",
+                    "example": "The organisation for bugs!"
+                },
+                "organisation_name": {
+                    "type": "string",
+                    "example": "buggy org"
+                }
+            }
+        },
         "organisation.createOrganisationInput": {
             "type": "object",
             "required": [
@@ -1076,39 +1179,6 @@
                     "type": "string",
                     "maxLength": 20,
                     "example": "testing team"
-                }
-            }
-        },
-        "team.teamOutput": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "integer",
-                    "example": 1710579130
-                },
-                "description": {
-                    "type": "string",
-                    "example": "The Buggy testing team!"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "testing team"
-                },
-                "organisation_description": {
-                    "type": "string",
-                    "example": "The organisation for bugs!"
-                },
-                "organisation_name": {
-                    "type": "string",
-                    "example": "buggy org"
-                },
-                "updated_at": {
-                    "type": "integer",
-                    "example": 1710579130
                 }
             }
         },

@@ -9,6 +9,11 @@ import (
 type mockStore struct {
 }
 
+// GetTeams implements Store.
+func (m *mockStore) GetTeams(ctx context.Context, profile uuid.UUID) ([]GetTeamsRow, error) {
+	return nil, nil
+}
+
 // GetAllTeamMembers implements Store.
 func (*mockStore) GetAllTeamMembers(ctx context.Context, team uuid.UUID) ([]GetAllTeamMembersRow, error) {
 	return nil, nil

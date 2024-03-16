@@ -28,6 +28,7 @@ type Querier interface {
 	GetProfileByEmail(ctx context.Context, email string) (Profile, error)
 	GetTeamMember(ctx context.Context, arg GetTeamMemberParams) (Teammember, error)
 	GetTeamOrganisation(ctx context.Context, id uuid.UUID) (uuid.UUID, error)
+	GetTeams(ctx context.Context, profile uuid.UUID) ([]GetTeamsRow, error)
 	UpdateOrganisation(ctx context.Context, arg UpdateOrganisationParams) (Organisation, error)
 	UpdateOrganisationOwner(ctx context.Context, arg UpdateOrganisationOwnerParams) (Organisation, error)
 	UpdatePassword(ctx context.Context, arg UpdatePasswordParams) (Profile, error)

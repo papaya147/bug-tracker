@@ -35,6 +35,51 @@ definitions:
       to_profile_name:
         type: string
     type: object
+  github_com_papaya147_buggy_backend_api_organisation_team.teamOutput:
+    properties:
+      created_at:
+        example: 1710579130
+        type: integer
+      description:
+        example: The Buggy testing team!
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      name:
+        example: testing team
+        type: string
+      organisation_description:
+        example: The organisation for bugs!
+        type: string
+      organisation_name:
+        example: buggy org
+        type: string
+      updated_at:
+        example: 1710579130
+        type: integer
+    type: object
+  github_com_papaya147_buggy_backend_api_team.teamOutput:
+    properties:
+      admin:
+        example: false
+        type: boolean
+      description:
+        example: The Buggy testing team!
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      name:
+        example: testing team
+        type: string
+      organisation_description:
+        example: The organisation for bugs!
+        type: string
+      organisation_name:
+        example: buggy org
+        type: string
+    type: object
   organisation.createOrganisationInput:
     properties:
       description:
@@ -150,30 +195,6 @@ definitions:
     required:
     - description
     - name
-    type: object
-  team.teamOutput:
-    properties:
-      created_at:
-        example: 1710579130
-        type: integer
-      description:
-        example: The Buggy testing team!
-        type: string
-      id:
-        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
-        type: string
-      name:
-        example: testing team
-        type: string
-      organisation_description:
-        example: The organisation for bugs!
-        type: string
-      organisation_name:
-        example: buggy org
-        type: string
-      updated_at:
-        example: 1710579130
-        type: integer
     type: object
   teammember.createTeamMemberInput:
     properties:
@@ -410,7 +431,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/team.teamOutput'
+              $ref: '#/definitions/github_com_papaya147_buggy_backend_api_organisation_team.teamOutput'
             type: array
         "400":
           description: Bad Request
@@ -444,7 +465,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/team.teamOutput'
+            $ref: '#/definitions/github_com_papaya147_buggy_backend_api_organisation_team.teamOutput'
         "400":
           description: Bad Request
           schema:
@@ -475,7 +496,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/team.teamOutput'
+            $ref: '#/definitions/github_com_papaya147_buggy_backend_api_organisation_team.teamOutput'
         "400":
           description: Bad Request
           schema:
@@ -775,6 +796,33 @@ paths:
       summary: Verify a profile.
       tags:
       - profile
+  /team:
+    get:
+      description: Get all teams for a profile.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_papaya147_buggy_backend_api_team.teamOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get all teams for a profile.
+      tags:
+      - team
   /team-member:
     post:
       consumes:

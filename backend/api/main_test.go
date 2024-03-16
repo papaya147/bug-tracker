@@ -6,6 +6,7 @@ import (
 
 	"github.com/papaya147/buggy/backend/api/organisation"
 	"github.com/papaya147/buggy/backend/api/profile"
+	"github.com/papaya147/buggy/backend/api/team"
 	"github.com/papaya147/buggy/backend/api/teammember"
 	"github.com/papaya147/buggy/backend/util"
 )
@@ -18,6 +19,7 @@ func TestMain(m *testing.M) {
 	testApp.profileHandler = profile.NewHandler(util.Config{}, nil, nil)
 	testApp.organisationHandler = organisation.NewHandler(util.Config{}, nil, nil)
 	testApp.teamMemberHandler = teammember.NewHandler(util.Config{}, nil, nil)
+	testApp.teamHandler = team.NewHandler(util.Config{}, nil, nil)
 	testApp.router = testApp.routes()
 
 	os.Exit(m.Run())

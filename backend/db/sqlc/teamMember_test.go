@@ -83,3 +83,13 @@ func TestUpdateTeamMember(t *testing.T) {
 	require.Equal(t, arg.Profile, member2.Profile)
 	require.Equal(t, arg.Admin, member2.Admin)
 }
+
+func TestGetTeams(t *testing.T) {
+	_, _, member := createRandomTeamMember(t)
+
+	arg := member.Profile
+
+	teams, err := testQueries.GetTeams(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, teams)
+}

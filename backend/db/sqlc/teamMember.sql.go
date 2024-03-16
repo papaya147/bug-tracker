@@ -113,6 +113,55 @@ func (q *Queries) GetTeamMember(ctx context.Context, arg GetTeamMemberParams) (T
 	return i, err
 }
 
+const getTeams = `-- name: GetTeams :many
+SELECT t.name as teamName,
+    t.description as teamDescription,
+    t.id as teamId,
+    o.name as orgName,
+    o.description as orgDescription,
+    tm.admin
+FROM teamMember tm
+    INNER JOIN team t ON tm.team = t.id
+    INNER JOIN organisation o ON o.id = t.organisation
+WHERE tm.profile = $1
+`
+
+type GetTeamsRow struct {
+	Teamname        string    `json:"teamname"`
+	Teamdescription string    `json:"teamdescription"`
+	Teamid          uuid.UUID `json:"teamid"`
+	Orgname         string    `json:"orgname"`
+	Orgdescription  string    `json:"orgdescription"`
+	Admin           bool      `json:"admin"`
+}
+
+func (q *Queries) GetTeams(ctx context.Context, profile uuid.UUID) ([]GetTeamsRow, error) {
+	rows, err := q.db.Query(ctx, getTeams, profile)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetTeamsRow{}
+	for rows.Next() {
+		var i GetTeamsRow
+		if err := rows.Scan(
+			&i.Teamname,
+			&i.Teamdescription,
+			&i.Teamid,
+			&i.Orgname,
+			&i.Orgdescription,
+			&i.Admin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateTeamMember = `-- name: UpdateTeamMember :one
 UPDATE teamMember
 SET admin = $1,

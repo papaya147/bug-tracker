@@ -21,3 +21,14 @@ SET admin = $1,
 WHERE team = $2
     AND profile = $3
 RETURNING *;
+-- name: GetTeams :many
+SELECT t.name as teamName,
+    t.description as teamDescription,
+    t.id as teamId,
+    o.name as orgName,
+    o.description as orgDescription,
+    tm.admin
+FROM teamMember tm
+    INNER JOIN team t ON tm.team = t.id
+    INNER JOIN organisation o ON o.id = t.organisation
+WHERE tm.profile = $1;
