@@ -8,11 +8,14 @@ import {
 } from "react-router-dom";
 import NotFound from "./NotFound";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
+import Login from "./pages/profile/Login";
 import { useEffect, useState } from "react";
 import Profile from "./model/Profile";
 import checkSession from "./requests/profile/checkSession";
-import SignUp from "./pages/SignUp";
+import SignUp from "./pages/profile/SignUp";
+import OrganisationHome from "./pages/organisation/OrganisationHome";
+import CreateOrganisation from "./pages/organisation/CreateOrganisation";
+import UpdateOrganisation from "./pages/organisation/UpdateOrganisation";
 
 function App() {
   return (
@@ -60,6 +63,9 @@ const Root = () => {
           />
           <Route path="/" element={<Home profile={profile} />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/organisation" element={<OrganisationHome />} />
+          <Route path="/organisation/create" element={<CreateOrganisation />} />
+          <Route path="/organisation/update" element={<UpdateOrganisation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

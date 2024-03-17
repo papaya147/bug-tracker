@@ -1,9 +1,9 @@
 import { useState } from "react";
-import ErrorModel from "../error/ErrorModel";
-import ErrorList from "../error/ErrorList";
+import ErrorModel from "../../error/ErrorModel";
+import ErrorList from "../../error/ErrorList";
 import { useNavigate } from "react-router-dom";
-import signUp from "../requests/profile/signUp";
-import ServerError from "../error/ServerError";
+import signUp from "../../requests/profile/signUp";
+import ServerError from "../../error/ServerError";
 
 const SignUp = () => {
   const [name, setName] = useState("");

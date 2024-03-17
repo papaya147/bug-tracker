@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import ErrorList from "../error/ErrorList";
-import ErrorModel from "../error/ErrorModel";
-import Profile from "../model/Profile";
+import ErrorList from "../../error/ErrorList";
+import ErrorModel from "../../error/ErrorModel";
+import Profile from "../../model/Profile";
 import { Link, useNavigate } from "react-router-dom";
-import login from "../requests/profile/login";
-import ServerError from "../error/ServerError";
+import login from "../../requests/profile/login";
+import ServerError from "../../error/ServerError";
 
 type SetProfileType = React.Dispatch<React.SetStateAction<Profile | null>>;
 type SetLoggedInType = React.Dispatch<React.SetStateAction<boolean>>;

@@ -3,8 +3,8 @@ type Profile = {
   name: string;
   email: string;
   verified: boolean;
-  createdAt: number;
-  updatedAt: number;
+  created_at: number;
+  updated_at: number;
 };
 
 export default Profile;
