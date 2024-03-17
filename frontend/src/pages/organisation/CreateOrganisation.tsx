@@ -18,6 +18,8 @@ const CreateOrganisation = () => {
 
   return (
     <OrganisationForm
+      defaultName=""
+      defaultDescription=""
       formTitle="Create Organisation"
       formButtonText="Create"
       sendDataToParent={handleDataFromChild}

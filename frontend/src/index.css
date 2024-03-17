@@ -10,7 +10,7 @@
   padding: 20px;
   display: flex;
   align-items: center;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   border-bottom: 1px solid #f2f2f2;
 }
@@ -61,13 +61,19 @@
 }
 
 button {
-  background: #800080;
-  color: #fff;
-  border: 0;
+  background: #fff;
+  color: #800080;
+  border: 1px solid;
+  border-color: #800080;
   padding: 8px;
   border-radius: 8px;
   margin-right: 10px;
   cursor: pointer;
+}
+
+button:hover {
+  background: #800080;
+  color: #fff;
 }
 
 .container {

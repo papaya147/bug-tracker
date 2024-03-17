@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorModel from "../../error/ErrorModel";
 import { Link } from "react-router-dom";
 import ErrorList from "../../error/ErrorList";
@@ -7,6 +7,8 @@ import ServerError from "../../error/ServerError";
 interface Props {
   formTitle: string;
   formButtonText: string;
+  defaultName: string | undefined;
+  defaultDescription: string | undefined;
   sendDataToParent: (
     name: string,
     description: string
@@ -16,12 +18,19 @@ interface Props {
 const OrganisationForm: React.FC<Props> = ({
   formTitle,
   formButtonText,
+  defaultName,
+  defaultDescription,
   sendDataToParent,
 }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorModel | null>(null);
+
+  useEffect(() => {
+    if (defaultName) setName(defaultName);
+    if (defaultDescription) setDescription(defaultDescription);
+  }, [defaultDescription, defaultName]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
