@@ -8,5 +8,5 @@ import (
 )
 
 func TestVerify(t *testing.T) {
-	test.TestCase(t, "GET", "/verify", testHandler.verify, nil, http.StatusOK)
+	test.TestCase(t, "GET", "/verify", testHandler.verify, nil, http.StatusFound)
 }

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import ErrorList from "./error/ErrorList";
-import ErrorModel from "./error/ErrorModel";
-import Profile from "./model/Profile";
-import { useNavigate } from "react-router-dom";
-import checkSession from "./requests/profile/checkSession";
-import login from "./requests/profile/login";
+import React, { useState } from "react";
+import ErrorList from "../error/ErrorList";
+import ErrorModel from "../error/ErrorModel";
+import Profile from "../model/Profile";
+import { Link, useNavigate } from "react-router-dom";
+import login from "../requests/profile/login";
+import ServerError from "../error/ServerError";
 
 type SetProfileType = React.Dispatch<React.SetStateAction<Profile | null>>;
 type SetLoggedInType = React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,33 +21,29 @@ const Login: React.FC<Props> = ({ setProfile, setLoggedIn }) => {
   const [error, setError] = useState<ErrorModel | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    checkSession().then((data) => {
-      if (!data.error.errors) {
-        setProfile(data.profile);
-        setLoggedIn(true);
-        navigate("/");
-      }
-    });
-  }, [navigate, setLoggedIn, setProfile]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     setIsLoading(true);
 
-    login(email, password).then((data) => {
-      if (data.error.errors) setError(data.error);
-      else {
-        setProfile(data.profile);
-        navigate("/");
-      }
-      setIsLoading(false);
-    });
+    login(email, password)
+      .then((data) => {
+        if (data.error.errors) setError(data.error);
+        else {
+          setProfile(data.profile);
+          setLoggedIn(true);
+          navigate("/");
+        }
+        setIsLoading(false);
+      })
+      .catch((e: Error) => {
+        setError(ServerError);
+        setIsLoading(false);
+      });
   };
 
   return (
-    <div className="login">
+    <div className="form">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <label>Email</label>
@@ -64,10 +60,11 @@ const Login: React.FC<Props> = ({ setProfile, setLoggedIn }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {!isLoading && <button>Login</button>}
+        {!isLoading && <button type="submit">Login</button>}
         {isLoading && <button disabled>Loading...</button>}
         {error && <ErrorList messages={error} />}
       </form>
+      <Link to={"/sign-up"}>Sign Up</Link>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import ErrorModel from "../../error/ErrorModel";
 import Profile from "../../model/Profile";
+import apiV1BaseUrl from "../api";
 
 type LoginResponse = {
   profile: Profile;
@@ -10,7 +11,7 @@ const login = async (
   email: string,
   password: string
 ): Promise<LoginResponse> => {
-  const res = await fetch("http://localhost:4000/api/v1/profile/login", {
+  const res = await fetch(apiV1BaseUrl + "/profile/login", {
     method: "POST",
     credentials: "include",
     body: JSON.stringify({ email, password }),

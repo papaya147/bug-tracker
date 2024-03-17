@@ -17,7 +17,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param 		 input body createProfileInput true "json"
-// @Success      200  {object}  profileOutput
+// @Success      302
 // @Failure      400  {object}  util.ErrorModel
 // @Failure      404  {object}  util.ErrorModel
 // @Failure      500  {object}  util.ErrorModel

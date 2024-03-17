@@ -1,4 +1,4 @@
-import Profile from "./model/Profile";
+import Profile from "../model/Profile";
 
 interface Props {
   profile: Profile | null; // Define the type of the profile prop

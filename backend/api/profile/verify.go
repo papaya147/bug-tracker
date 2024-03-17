@@ -2,6 +2,7 @@ package profile
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -53,12 +54,5 @@ func (handler *Handler) verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.WriteJson(w, http.StatusOK, profileOutput{
-		Id:        profile.ID,
-		Name:      profile.Name,
-		Email:     profile.Email,
-		Verified:  profile.Verified,
-		CreatedAt: profile.Createdat.Unix(),
-		UpdatedAt: profile.Updatedat.Unix(),
-	})
+	http.Redirect(w, r, fmt.Sprintf("%s/login", handler.config.CLIENT_PREFIX), http.StatusFound)
 }
