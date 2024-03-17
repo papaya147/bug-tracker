@@ -46,7 +46,7 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var response []teamOutput
+	response := []teamOutput{}
 	for _, team := range teams {
 		response = append(response, teamOutput{
 			Id:                      team.ID,

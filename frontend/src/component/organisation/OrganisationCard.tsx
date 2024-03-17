@@ -17,7 +17,9 @@ const OrganisationCard: React.FC<Props> = ({ organisation }) => {
           Established{" "}
           {new Date(organisation.created_at * 1000).toLocaleDateString()}
         </p>
-        <button>View Teams</button>
+        <button onClick={() => navigate("/organisation/teams")}>
+          View Teams
+        </button>
         <button onClick={() => navigate("/organisation/update")}>
           Update details
         </button>

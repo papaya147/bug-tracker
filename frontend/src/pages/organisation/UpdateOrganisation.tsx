@@ -14,7 +14,6 @@ const UpdateOrganisation = () => {
     getOrganisation().then((data) => {
       if (!data.error.errors) setOrganisation(data.organisation);
       else navigate("/organisation");
-      console.log(data.organisation.name);
     });
   }, [navigate]);
 

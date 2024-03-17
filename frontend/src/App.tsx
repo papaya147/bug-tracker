@@ -16,6 +16,9 @@ import SignUp from "./pages/profile/SignUp";
 import OrganisationHome from "./pages/organisation/OrganisationHome";
 import CreateOrganisation from "./pages/organisation/CreateOrganisation";
 import UpdateOrganisation from "./pages/organisation/UpdateOrganisation";
+import TeamHome from "./pages/team/TeamHome";
+import CreateTeam from "./pages/team/CreateTeam";
+import UpdateTeam from "./pages/team/UpdateTeam";
 
 function App() {
   return (
@@ -66,6 +69,12 @@ const Root = () => {
           <Route path="/organisation" element={<OrganisationHome />} />
           <Route path="/organisation/create" element={<CreateOrganisation />} />
           <Route path="/organisation/update" element={<UpdateOrganisation />} />
+          <Route path="/organisation/teams" element={<TeamHome />} />
+          <Route path="/organisation/teams/create" element={<CreateTeam />} />
+          <Route
+            path="/organisation/teams/:id/update"
+            element={<UpdateTeam />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
