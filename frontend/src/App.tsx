@@ -19,6 +19,8 @@ import UpdateOrganisation from "./pages/organisation/UpdateOrganisation";
 import TeamHome from "./pages/team/TeamHome";
 import CreateTeam from "./pages/team/CreateTeam";
 import UpdateTeam from "./pages/team/UpdateTeam";
+import TeamMemberHome from "./pages/teammember/TeamMemberHome";
+import CreateTeamMember from "./pages/teammember/CreateTeamMember";
 
 function App() {
   return (
@@ -74,6 +76,14 @@ const Root = () => {
           <Route
             path="/organisation/teams/:id/update"
             element={<UpdateTeam />}
+          />
+          <Route
+            path="/organisation/teams/:id/members"
+            element={<TeamMemberHome />}
+          />
+          <Route
+            path="/organisation/teams/:id/members/create"
+            element={<CreateTeamMember />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>

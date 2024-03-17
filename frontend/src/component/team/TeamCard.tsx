@@ -13,6 +13,11 @@ const TeamCard: React.FC<Props> = ({ team }) => {
       <h3>{team.name}</h3>
       <p>{team.description}</p>
       <p>Established {new Date(team.created_at * 1000).toLocaleDateString()}</p>
+      <button
+        onClick={() => navigate(`/organisation/teams/${team.id}/members`)}
+      >
+        View Members
+      </button>
       <button onClick={() => navigate(`/organisation/teams/${team.id}/update`)}>
         Update details
       </button>

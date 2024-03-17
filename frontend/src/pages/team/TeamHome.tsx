@@ -16,8 +16,8 @@ const TeamHome = () => {
 
   return (
     <div className="home-view">
-      {teams && <TeamList teams={teams} />}
       <Link to="/organisation/teams/create">Create a team!</Link>
+      {teams && <TeamList teams={teams} />}
     </div>
   );
 };
