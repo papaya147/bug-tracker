@@ -1,4 +1,6 @@
 DROP TABLE IF EXISTS bug;
+DROP TYPE bugPriority;
+DROP TYPE bugStatus;
 DROP TABLE IF EXISTS teamMember;
 DROP TABLE IF EXISTS team;
 DROP TABLE IF EXISTS organisationTransfer;

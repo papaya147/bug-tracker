@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import TeamMember from "../../model/TeamMembers";
+import TeamMembers from "../../model/TeamMembers";
 import getTeamMembers from "../../requests/teammember/getTeamMembers";
 import TeamMemberTable from "../../component/teammember/TeamMemberTable";
 
 const TeamMemberHome = () => {
   const navigate = useNavigate();
-  const [members, setMembers] = useState<TeamMember[] | null>(null);
+  const [members, setMembers] = useState<TeamMembers[] | null>(null);
   const { id } = useParams();
 
   useEffect(() => {

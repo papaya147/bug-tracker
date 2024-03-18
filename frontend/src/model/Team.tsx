@@ -4,8 +4,8 @@ type Team = {
   description: string;
   organisation_name: string;
   organisation_description: string;
-  created_at: number;
-  update_at: number;
+  created_at?: number;
+  update_at?: number;
 };
 
 export default Team;

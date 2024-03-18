@@ -13,7 +13,7 @@ const UpdateOrganisation = () => {
   useEffect(() => {
     getOrganisation().then((data) => {
       if (!data.error.errors) setOrganisation(data.organisation);
-      else navigate("/organisation");
+      else navigate(-1);
     });
   }, [navigate]);
 
@@ -23,7 +23,7 @@ const UpdateOrganisation = () => {
   ): Promise<ErrorModel | null> => {
     const data = await updateOrganisation(name, description);
     if (data.error.errors) return data.error;
-    else navigate("/organisation");
+    else navigate(-1);
     return null;
   };
 

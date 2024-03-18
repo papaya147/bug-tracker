@@ -26,7 +26,7 @@ const TeamMemberTable: React.FC<Props> = ({ teamId, members }) => {
               key={member.id}
               onClick={() =>
                 navigate(
-                  `/organisation/teams/${teamId}/members/${member.email}/update`
+                  `/organisation/teams/${teamId}/members/${member.id}/update`
                 )
               }
             >

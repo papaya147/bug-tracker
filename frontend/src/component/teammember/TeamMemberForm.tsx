@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ErrorModel from "../../error/ErrorModel";
 import ServerError from "../../error/ServerError";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ErrorList from "../../error/ErrorList";
 
 interface Props {
@@ -28,6 +28,7 @@ const TeamMemberForm: React.FC<Props> = ({
   const [admin, setAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorModel | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (defaultEmail) setEmail(defaultEmail);
@@ -71,7 +72,7 @@ const TeamMemberForm: React.FC<Props> = ({
         {isLoading && <button disabled>Loading...</button>}
         {error && <ErrorList messages={error} />}
       </form>
-      <Link to={`/organisation/teams/${teamId}/members`}>Go Back</Link>
+      <button onClick={() => navigate(-1)}>Go Back</button>
     </div>
   );
 };

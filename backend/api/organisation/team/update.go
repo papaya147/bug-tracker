@@ -44,7 +44,7 @@ func (handler *Handler) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	org, err := handler.store.GetOrganisation(r.Context(), payload.UserId)
+	org, err := handler.store.GetOrganisationByOwner(r.Context(), payload.UserId)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			util.NewErrorAndWrite(w, util.ErrEntityDoesNotExist)

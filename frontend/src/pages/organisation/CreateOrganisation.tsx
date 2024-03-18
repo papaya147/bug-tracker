@@ -12,7 +12,7 @@ const CreateOrganisation = () => {
   ): Promise<ErrorModel | null> => {
     const data = await createOrganisation(name, description);
     if (data.error.errors) return data.error;
-    else navigate("/organisation");
+    else navigate(-1);
     return null;
   };
 

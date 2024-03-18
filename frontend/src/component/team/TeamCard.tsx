@@ -3,24 +3,34 @@ import Team from "../../model/Team";
 
 interface Props {
   team: Team;
+  showUpdateButton: boolean;
+  viewMembersLink: string;
 }
 
-const TeamCard: React.FC<Props> = ({ team }) => {
+const TeamCard: React.FC<Props> = ({
+  team,
+  showUpdateButton,
+  viewMembersLink,
+}) => {
   const navigate = useNavigate();
 
   return (
     <div className="card">
       <h3>{team.name}</h3>
       <p>{team.description}</p>
-      <p>Established {new Date(team.created_at * 1000).toLocaleDateString()}</p>
-      <button
-        onClick={() => navigate(`/organisation/teams/${team.id}/members`)}
-      >
-        View Members
-      </button>
-      <button onClick={() => navigate(`/organisation/teams/${team.id}/update`)}>
-        Update details
-      </button>
+      {team.created_at && (
+        <p>
+          Established {new Date(team.created_at * 1000).toLocaleDateString()}
+        </p>
+      )}
+      <button onClick={() => navigate(viewMembersLink)}>View Members</button>
+      {showUpdateButton && (
+        <button
+          onClick={() => navigate(`/organisation/teams/${team.id}/update`)}
+        >
+          Update details
+        </button>
+      )}
     </div>
   );
 };

@@ -541,11 +541,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/profile.profileOutput"
-                        }
+                    "302": {
+                        "description": "Found"
                     },
                     "400": {
                         "description": "Bad Request",

@@ -30,7 +30,7 @@ func (store *sqlStore) CreateOrganisationTransferTx(ctx context.Context, arg Cre
 			return util.ErrCannotTransferToSelf
 		}
 
-		org, err := q.GetOrganisation(ctx, arg.FromProfile)
+		org, err := q.GetOrganisationByOwner(ctx, arg.FromProfile)
 		if err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return util.ErrEntityDoesNotExist

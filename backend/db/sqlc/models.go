@@ -5,24 +5,113 @@
 package db
 
 import (
+	"database/sql/driver"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Bugpriority string
+
+const (
+	BugpriorityURGENT Bugpriority = "URGENT"
+	BugpriorityHIGH   Bugpriority = "HIGH"
+	BugpriorityLOW    Bugpriority = "LOW"
+)
+
+func (e *Bugpriority) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = Bugpriority(s)
+	case string:
+		*e = Bugpriority(s)
+	default:
+		return fmt.Errorf("unsupported scan type for Bugpriority: %T", src)
+	}
+	return nil
+}
+
+type NullBugpriority struct {
+	Bugpriority Bugpriority `json:"bugpriority"`
+	Valid       bool        `json:"valid"` // Valid is true if Bugpriority is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullBugpriority) Scan(value interface{}) error {
+	if value == nil {
+		ns.Bugpriority, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.Bugpriority.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullBugpriority) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.Bugpriority), nil
+}
+
+type Bugstatus string
+
+const (
+	BugstatusPENDING    Bugstatus = "PENDING"
+	BugstatusPROCESSING Bugstatus = "PROCESSING"
+)
+
+func (e *Bugstatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = Bugstatus(s)
+	case string:
+		*e = Bugstatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for Bugstatus: %T", src)
+	}
+	return nil
+}
+
+type NullBugstatus struct {
+	Bugstatus Bugstatus `json:"bugstatus"`
+	Valid     bool      `json:"valid"` // Valid is true if Bugstatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullBugstatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.Bugstatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.Bugstatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullBugstatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.Bugstatus), nil
+}
+
 type Bug struct {
-	ID          uuid.UUID        `json:"id"`
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Status      string           `json:"status"`
-	Priority    string           `json:"priority"`
-	Assignedto  uuid.UUID        `json:"assignedto"`
-	Assignedby  uuid.UUID        `json:"assignedby"`
-	Closedby    pgtype.UUID      `json:"closedby"`
-	Createdat   pgtype.Timestamp `json:"createdat"`
-	Updatedat   pgtype.Timestamp `json:"updatedat"`
-	Closedat    pgtype.Timestamp `json:"closedat"`
+	ID          uuid.UUID          `json:"id"`
+	Name        string             `json:"name"`
+	Description string             `json:"description"`
+	Status      Bugstatus          `json:"status"`
+	Priority    Bugpriority        `json:"priority"`
+	Assignedto  uuid.UUID          `json:"assignedto"`
+	Assignedby  uuid.UUID          `json:"assignedby"`
+	Completed   pgtype.Bool        `json:"completed"`
+	Createdat   time.Time          `json:"createdat"`
+	Updatedat   time.Time          `json:"updatedat"`
+	Closedby    pgtype.UUID        `json:"closedby"`
+	Remarks     pgtype.Text        `json:"remarks"`
+	Closedat    pgtype.Timestamptz `json:"closedat"`
 }
 
 type Organisation struct {

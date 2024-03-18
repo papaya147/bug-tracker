@@ -35,7 +35,17 @@ func (handler *Handler) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	org, err := handler.store.GetOrganisation(r.Context(), payload.UserId)
+	orgId, err := handler.store.GetTeamOrganisation(r.Context(), requestPayload.TeamId)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			util.NewErrorAndWrite(w, util.ErrEntityDoesNotExist)
+			return
+		}
+		util.NewErrorAndWrite(w, util.ErrDatabase)
+		return
+	}
+
+	org, err := handler.store.GetOrganisation(r.Context(), orgId)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			util.NewErrorAndWrite(w, util.ErrEntityDoesNotExist)

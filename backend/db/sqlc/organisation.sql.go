@@ -46,12 +46,32 @@ func (q *Queries) CreateOrganisation(ctx context.Context, arg CreateOrganisation
 const getOrganisation = `-- name: GetOrganisation :one
 SELECT id, name, description, owner, createdat, updatedat
 FROM organisation
+WHERE id = $1
+`
+
+func (q *Queries) GetOrganisation(ctx context.Context, id uuid.UUID) (Organisation, error) {
+	row := q.db.QueryRow(ctx, getOrganisation, id)
+	var i Organisation
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Owner,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}
+
+const getOrganisationByOwner = `-- name: GetOrganisationByOwner :one
+SELECT id, name, description, owner, createdat, updatedat
+FROM organisation
 WHERE owner = $1
 LIMIT 1
 `
 
-func (q *Queries) GetOrganisation(ctx context.Context, owner uuid.UUID) (Organisation, error) {
-	row := q.db.QueryRow(ctx, getOrganisation, owner)
+func (q *Queries) GetOrganisationByOwner(ctx context.Context, owner uuid.UUID) (Organisation, error) {
+	row := q.db.QueryRow(ctx, getOrganisationByOwner, owner)
 	var i Organisation
 	err := row.Scan(
 		&i.ID,

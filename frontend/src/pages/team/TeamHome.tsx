@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import Team from "../../model/Team";
+import getTeams from "../../requests/team/getTeams";
 import TeamList from "../../component/team/TeamList";
-import getOrganisationTeams from "../../requests/team/getOrganisationTeams";
-import { Link } from "react-router-dom";
 
 const TeamHome = () => {
   const [teams, setTeams] = useState<Team[] | null>(null);
 
   useEffect(() => {
-    getOrganisationTeams().then((data) => {
+    getTeams().then((data) => {
       console.log(data);
       if (!data.error.errors) setTeams(data.teams);
     });
@@ -16,8 +15,7 @@ const TeamHome = () => {
 
   return (
     <div className="home-view">
-      <Link to="/organisation/teams/create">Create a team!</Link>
-      {teams && <TeamList teams={teams} />}
+      {teams && <TeamList teams={teams} isOrganisationChild={false} />}
     </div>
   );
 };

@@ -38,11 +38,11 @@ func TestCreateOrganisation(t *testing.T) {
 	createRandomOrganisation(t)
 }
 
-func TestGetOrganisation(t *testing.T) {
+func TestGetOrganisationByOwner(t *testing.T) {
 	org1 := createRandomOrganisation(t)
 
 	arg := org1.Owner
-	org2, err := testQueries.GetOrganisation(context.Background(), arg)
+	org2, err := testQueries.GetOrganisationByOwner(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, org2)
 
@@ -90,5 +90,21 @@ func TestUpdateOrganisationOwner(t *testing.T) {
 	require.Equal(t, org1.Name, org2.Name)
 	require.Equal(t, org1.Description, org2.Description)
 	require.Equal(t, arg.Owner, org2.Owner)
+	require.WithinDuration(t, org1.Createdat, org2.Createdat, time.Second)
+}
+
+func TestGetOrganisation(t *testing.T) {
+	org1 := createRandomOrganisation(t)
+
+	arg := org1.ID
+
+	org2, err := testQueries.GetOrganisation(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, org2)
+
+	require.Equal(t, org1.ID, org2.ID)
+	require.Equal(t, org1.Name, org2.Name)
+	require.Equal(t, org1.Description, org2.Description)
+	require.Equal(t, org1.Owner, org2.Owner)
 	require.WithinDuration(t, org1.Createdat, org2.Createdat, time.Second)
 }

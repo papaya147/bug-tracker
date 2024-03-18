@@ -16,11 +16,13 @@ import SignUp from "./pages/profile/SignUp";
 import OrganisationHome from "./pages/organisation/OrganisationHome";
 import CreateOrganisation from "./pages/organisation/CreateOrganisation";
 import UpdateOrganisation from "./pages/organisation/UpdateOrganisation";
-import TeamHome from "./pages/team/TeamHome";
-import CreateTeam from "./pages/team/CreateTeam";
-import UpdateTeam from "./pages/team/UpdateTeam";
 import TeamMemberHome from "./pages/teammember/TeamMemberHome";
 import CreateTeamMember from "./pages/teammember/CreateTeamMember";
+import UpdateTeamMember from "./pages/teammember/UpdateTeamMember";
+import OrganisationTeamHome from "./pages/organisation/team/OrganisationTeamHome";
+import CreateOrganisationTeam from "./pages/organisation/team/CreateOrganisationTeam";
+import UpdateOrganisationTeam from "./pages/organisation/team/UpdateOrganisationTeam";
+import TeamHome from "./pages/team/TeamHome";
 
 function App() {
   return (
@@ -71,11 +73,17 @@ const Root = () => {
           <Route path="/organisation" element={<OrganisationHome />} />
           <Route path="/organisation/create" element={<CreateOrganisation />} />
           <Route path="/organisation/update" element={<UpdateOrganisation />} />
-          <Route path="/organisation/teams" element={<TeamHome />} />
-          <Route path="/organisation/teams/create" element={<CreateTeam />} />
+          <Route
+            path="/organisation/teams"
+            element={<OrganisationTeamHome />}
+          />
+          <Route
+            path="/organisation/teams/create"
+            element={<CreateOrganisationTeam />}
+          />
           <Route
             path="/organisation/teams/:id/update"
-            element={<UpdateTeam />}
+            element={<UpdateOrganisationTeam />}
           />
           <Route
             path="/organisation/teams/:id/members"
@@ -85,6 +93,12 @@ const Root = () => {
             path="/organisation/teams/:id/members/create"
             element={<CreateTeamMember />}
           />
+          <Route
+            path="/organisation/teams/:id/members/:profile_id/update"
+            element={<UpdateTeamMember isOrganisationChild={true} />}
+          />
+          <Route path="/teams" element={<TeamHome />} />
+          <Route path="/teams/:id/members" element={<TeamMemberHome />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

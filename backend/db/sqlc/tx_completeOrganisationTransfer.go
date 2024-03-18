@@ -19,7 +19,7 @@ func (store *sqlStore) CompleteOrganisationTransferTx(ctx context.Context, arg C
 
 	err := store.execTx(ctx, func(q *Queries) error {
 		// * check if profile already has organisation
-		profileOrg, err := q.GetOrganisation(ctx, arg.ToProfile)
+		profileOrg, err := q.GetOrganisationByOwner(ctx, arg.ToProfile)
 		if err != nil && err != pgx.ErrNoRows {
 			return util.ErrDatabase
 		}

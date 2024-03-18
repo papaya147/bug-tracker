@@ -55,18 +55,22 @@ ALTER TABLE teamMember
 ADD FOREIGN KEY (team) REFERENCES team(id);
 ALTER TABLE teamMember
 ADD FOREIGN KEY (profile) REFERENCES profile(id);
+CREATE TYPE bugStatus AS ENUM('PENDING', 'PROCESSING');
+CREATE TYPE bugPriority AS ENUM('URGENT', 'HIGH', 'LOW');
 CREATE TABLE IF NOT EXISTS bug(
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
-    status TEXT NOT NULL,
-    priority TEXT NOT NULL,
+    status bugStatus NOT NULL,
+    priority bugPriority NOT NULL,
     assignedTo UUID NOT NULL,
     assignedBy UUID NOT NULL,
+    completed BOOLEAN DEFAULT FALSE,
+    createdAt TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updatedAt TIMESTAMPTZ NOT NULL DEFAULT now(),
     closedBy UUID,
-    createdAt TIMESTAMP NOT NULL DEFAULT now(),
-    updatedAt TIMESTAMP NOT NULL DEFAULT now(),
-    closedAt TIMESTAMP
+    remarks TEXT,
+    closedAt TIMESTAMPTZ
 );
 ALTER TABLE bug
 ADD FOREIGN KEY (assignedTo) REFERENCES team(id);

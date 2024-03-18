@@ -39,7 +39,7 @@ func (handler *Handler) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = handler.store.GetOrganisation(r.Context(), payload.UserId)
+	_, err = handler.store.GetOrganisationByOwner(r.Context(), payload.UserId)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			util.NewErrorAndWrite(w, util.ErrEntityDoesNotExist)

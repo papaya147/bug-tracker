@@ -2,7 +2,7 @@
 INSERT INTO organisation(id, name, description, owner)
 VALUES ($1, $2, $3, $4)
 RETURNING *;
--- name: GetOrganisation :one
+-- name: GetOrganisationByOwner :one
 SELECT *
 FROM organisation
 WHERE owner = $1
@@ -20,3 +20,7 @@ SET owner = $1,
     updatedAt = now()
 WHERE id = $2
 RETURNING *;
+-- name: GetOrganisation :one
+SELECT *
+FROM organisation
+WHERE id = $1;

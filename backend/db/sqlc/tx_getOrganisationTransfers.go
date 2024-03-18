@@ -64,7 +64,7 @@ func (store *sqlStore) GetOrganisationTransfersTx(ctx context.Context, arg uuid.
 			return util.ErrDatabase
 		}
 
-		org, err := q.GetOrganisation(ctx, arg)
+		org, err := q.GetOrganisationByOwner(ctx, arg)
 		if err != nil && err != pgx.ErrNoRows {
 			return util.ErrDatabase
 		}

@@ -13,7 +13,7 @@ const CreateTeamMember = () => {
   ): Promise<ErrorModel | null> => {
     const error = await createTeamMember(id ?? "", email, admin);
     if (error.errors) return error;
-    else navigate(`/organisation/teams/${id}/members`);
+    else navigate(-1);
     return null;
   };
 

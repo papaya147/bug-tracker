@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ErrorList from "../../error/ErrorList";
 import ErrorModel from "../../error/ErrorModel";
 import ServerError from "../../error/ServerError";
@@ -26,6 +26,7 @@ const TeamForm: React.FC<Props> = ({
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorModel | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (defaultName) setName(defaultName);
@@ -67,7 +68,7 @@ const TeamForm: React.FC<Props> = ({
         {isLoading && <button disabled>Loading...</button>}
         {error && <ErrorList messages={error} />}
       </form>
-      <Link to={"/organisation/teams"}>Go Back</Link>
+      <button onClick={() => navigate(-1)}>Go Back</button>
     </div>
   );
 };

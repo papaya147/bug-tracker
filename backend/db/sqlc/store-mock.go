@@ -9,6 +9,51 @@ import (
 type mockStore struct {
 }
 
+// CloseBug implements Store.
+func (m *mockStore) CloseBug(ctx context.Context, arg CloseBugParams) (Bug, error) {
+	return Bug{}, nil
+}
+
+// CreateBug implements Store.
+func (m *mockStore) CreateBug(ctx context.Context, arg CreateBugParams) (Bug, error) {
+	return Bug{}, nil
+}
+
+// DeleteBug implements Store.
+func (m *mockStore) DeleteBug(ctx context.Context, id uuid.UUID) (Bug, error) {
+	return Bug{}, nil
+}
+
+// GetActiveBugsByProfile implements Store.
+func (m *mockStore) GetActiveBugsByProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
+	return nil, nil
+}
+
+// GetBug implements Store.
+func (m *mockStore) GetBug(ctx context.Context, id uuid.UUID) (Bug, error) {
+	return Bug{}, nil
+}
+
+// GetBugsByAsigneeTeam implements Store.
+func (m *mockStore) GetBugsByAsigneeTeam(ctx context.Context, team uuid.UUID) ([]Bug, error) {
+	return nil, nil
+}
+
+// GetBugsByAssignedTeam implements Store.
+func (m *mockStore) GetBugsByAssignedTeam(ctx context.Context, assignedto uuid.UUID) ([]Bug, error) {
+	return nil, nil
+}
+
+// UpdateBug implements Store.
+func (m *mockStore) UpdateBug(ctx context.Context, arg UpdateBugParams) (Bug, error) {
+	return Bug{}, nil
+}
+
+// GetOrganisation implements Store.
+func (m *mockStore) GetOrganisation(ctx context.Context, id uuid.UUID) (Organisation, error) {
+	return Organisation{}, nil
+}
+
 // GetTeams implements Store.
 func (m *mockStore) GetTeams(ctx context.Context, profile uuid.UUID) ([]GetTeamsRow, error) {
 	return nil, nil
@@ -112,7 +157,7 @@ func (*mockStore) UpdateOrganisation(ctx context.Context, arg UpdateOrganisation
 }
 
 // GetOrganisation implements Store.
-func (*mockStore) GetOrganisation(ctx context.Context, id uuid.UUID) (Organisation, error) {
+func (*mockStore) GetOrganisationByOwner(ctx context.Context, id uuid.UUID) (Organisation, error) {
 	return Organisation{}, nil
 }
 
