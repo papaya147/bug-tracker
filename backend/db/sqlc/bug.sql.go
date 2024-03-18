@@ -19,7 +19,7 @@ SET completed = TRUE,
     remarks = $2,
     closedAt = NOW()
 WHERE id = $3
-RETURNING id, name, description, status, priority, assignedto, assignedby, completed, createdat, updatedat, closedby, remarks, closedat
+RETURNING id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
 `
 
 type CloseBugParams struct {
@@ -38,7 +38,8 @@ func (q *Queries) CloseBug(ctx context.Context, arg CloseBugParams) (Bug, error)
 		&i.Status,
 		&i.Priority,
 		&i.Assignedto,
-		&i.Assignedby,
+		&i.Assignedbyprofile,
+		&i.Assignedbyteam,
 		&i.Completed,
 		&i.Createdat,
 		&i.Updatedat,
@@ -54,23 +55,23 @@ INSERT INTO bug(
         id,
         name,
         description,
-        status,
         priority,
         assignedTo,
-        assignedBy
+        assignedByProfile,
+        assignedByTeam
     )
 VALUES ($1, $2, $3, $4, $5, $6, $7)
-RETURNING id, name, description, status, priority, assignedto, assignedby, completed, createdat, updatedat, closedby, remarks, closedat
+RETURNING id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
 `
 
 type CreateBugParams struct {
-	ID          uuid.UUID   `json:"id"`
-	Name        string      `json:"name"`
-	Description string      `json:"description"`
-	Status      Bugstatus   `json:"status"`
-	Priority    Bugpriority `json:"priority"`
-	Assignedto  uuid.UUID   `json:"assignedto"`
-	Assignedby  uuid.UUID   `json:"assignedby"`
+	ID                uuid.UUID   `json:"id"`
+	Name              string      `json:"name"`
+	Description       string      `json:"description"`
+	Priority          Bugpriority `json:"priority"`
+	Assignedto        uuid.UUID   `json:"assignedto"`
+	Assignedbyprofile uuid.UUID   `json:"assignedbyprofile"`
+	Assignedbyteam    uuid.UUID   `json:"assignedbyteam"`
 }
 
 func (q *Queries) CreateBug(ctx context.Context, arg CreateBugParams) (Bug, error) {
@@ -78,10 +79,10 @@ func (q *Queries) CreateBug(ctx context.Context, arg CreateBugParams) (Bug, erro
 		arg.ID,
 		arg.Name,
 		arg.Description,
-		arg.Status,
 		arg.Priority,
 		arg.Assignedto,
-		arg.Assignedby,
+		arg.Assignedbyprofile,
+		arg.Assignedbyteam,
 	)
 	var i Bug
 	err := row.Scan(
@@ -91,7 +92,8 @@ func (q *Queries) CreateBug(ctx context.Context, arg CreateBugParams) (Bug, erro
 		&i.Status,
 		&i.Priority,
 		&i.Assignedto,
-		&i.Assignedby,
+		&i.Assignedbyprofile,
+		&i.Assignedbyteam,
 		&i.Completed,
 		&i.Createdat,
 		&i.Updatedat,
@@ -105,7 +107,7 @@ func (q *Queries) CreateBug(ctx context.Context, arg CreateBugParams) (Bug, erro
 const deleteBug = `-- name: DeleteBug :one
 DELETE FROM bug
 WHERE id = $1
-RETURNING id, name, description, status, priority, assignedto, assignedby, completed, createdat, updatedat, closedby, remarks, closedat
+RETURNING id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
 `
 
 func (q *Queries) DeleteBug(ctx context.Context, id uuid.UUID) (Bug, error) {
@@ -118,7 +120,8 @@ func (q *Queries) DeleteBug(ctx context.Context, id uuid.UUID) (Bug, error) {
 		&i.Status,
 		&i.Priority,
 		&i.Assignedto,
-		&i.Assignedby,
+		&i.Assignedbyprofile,
+		&i.Assignedbyteam,
 		&i.Completed,
 		&i.Createdat,
 		&i.Updatedat,
@@ -130,7 +133,7 @@ func (q *Queries) DeleteBug(ctx context.Context, id uuid.UUID) (Bug, error) {
 }
 
 const getActiveBugsByProfile = `-- name: GetActiveBugsByProfile :many
-SELECT b.id, b.name, b.description, b.status, b.priority, b.assignedto, b.assignedby, b.completed, b.createdat, b.updatedat, b.closedby, b.remarks, b.closedat
+SELECT b.id, b.name, b.description, b.status, b.priority, b.assignedto, b.assignedbyprofile, b.assignedbyteam, b.completed, b.createdat, b.updatedat, b.closedby, b.remarks, b.closedat
 FROM bug b
     INNER JOIN team t ON b.assignedTo = t.id
     INNER JOIN teamMember tm ON t.id = tm.team
@@ -156,7 +159,8 @@ func (q *Queries) GetActiveBugsByProfile(ctx context.Context, profile uuid.UUID)
 			&i.Status,
 			&i.Priority,
 			&i.Assignedto,
-			&i.Assignedby,
+			&i.Assignedbyprofile,
+			&i.Assignedbyteam,
 			&i.Completed,
 			&i.Createdat,
 			&i.Updatedat,
@@ -175,7 +179,7 @@ func (q *Queries) GetActiveBugsByProfile(ctx context.Context, profile uuid.UUID)
 }
 
 const getBug = `-- name: GetBug :one
-SELECT id, name, description, status, priority, assignedto, assignedby, completed, createdat, updatedat, closedby, remarks, closedat
+SELECT id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
 FROM bug b
 WHERE id = $1
 `
@@ -190,7 +194,8 @@ func (q *Queries) GetBug(ctx context.Context, id uuid.UUID) (Bug, error) {
 		&i.Status,
 		&i.Priority,
 		&i.Assignedto,
-		&i.Assignedby,
+		&i.Assignedbyprofile,
+		&i.Assignedbyteam,
 		&i.Completed,
 		&i.Createdat,
 		&i.Updatedat,
@@ -201,52 +206,8 @@ func (q *Queries) GetBug(ctx context.Context, id uuid.UUID) (Bug, error) {
 	return i, err
 }
 
-const getBugsByAsigneeTeam = `-- name: GetBugsByAsigneeTeam :many
-SELECT b.id, b.name, b.description, b.status, b.priority, b.assignedto, b.assignedby, b.completed, b.createdat, b.updatedat, b.closedby, b.remarks, b.closedat
-FROM bug b
-    INNER JOIN teamMember tm ON b.assignedBy = tm.profile
-WHERE tm.team = $1
-ORDER BY b.priority DESC,
-    b.status DESC,
-    b.completed DESC
-`
-
-func (q *Queries) GetBugsByAsigneeTeam(ctx context.Context, team uuid.UUID) ([]Bug, error) {
-	rows, err := q.db.Query(ctx, getBugsByAsigneeTeam, team)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Bug{}
-	for rows.Next() {
-		var i Bug
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Description,
-			&i.Status,
-			&i.Priority,
-			&i.Assignedto,
-			&i.Assignedby,
-			&i.Completed,
-			&i.Createdat,
-			&i.Updatedat,
-			&i.Closedby,
-			&i.Remarks,
-			&i.Closedat,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getBugsByAssignedTeam = `-- name: GetBugsByAssignedTeam :many
-SELECT id, name, description, status, priority, assignedto, assignedby, completed, createdat, updatedat, closedby, remarks, closedat
+SELECT id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
 FROM bug
 WHERE assignedTo = $1
 ORDER BY priority DESC,
@@ -270,7 +231,52 @@ func (q *Queries) GetBugsByAssignedTeam(ctx context.Context, assignedto uuid.UUI
 			&i.Status,
 			&i.Priority,
 			&i.Assignedto,
-			&i.Assignedby,
+			&i.Assignedbyprofile,
+			&i.Assignedbyteam,
+			&i.Completed,
+			&i.Createdat,
+			&i.Updatedat,
+			&i.Closedby,
+			&i.Remarks,
+			&i.Closedat,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getBugsByAssigneeTeam = `-- name: GetBugsByAssigneeTeam :many
+SELECT id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
+FROM bug
+WHERE assignedByTeam = $1
+ORDER BY priority DESC,
+    status DESC,
+    completed DESC
+`
+
+func (q *Queries) GetBugsByAssigneeTeam(ctx context.Context, assignedbyteam uuid.UUID) ([]Bug, error) {
+	rows, err := q.db.Query(ctx, getBugsByAssigneeTeam, assignedbyteam)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Bug{}
+	for rows.Next() {
+		var i Bug
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Status,
+			&i.Priority,
+			&i.Assignedto,
+			&i.Assignedbyprofile,
+			&i.Assignedbyteam,
 			&i.Completed,
 			&i.Createdat,
 			&i.Updatedat,
@@ -294,10 +300,9 @@ SET name = $1,
     description = $2,
     status = $3,
     priority = $4,
-    assignedTo = $5,
     updatedAt = NOW()
-WHERE id = $6
-RETURNING id, name, description, status, priority, assignedto, assignedby, completed, createdat, updatedat, closedby, remarks, closedat
+WHERE id = $5
+RETURNING id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
 `
 
 type UpdateBugParams struct {
@@ -305,7 +310,6 @@ type UpdateBugParams struct {
 	Description string      `json:"description"`
 	Status      Bugstatus   `json:"status"`
 	Priority    Bugpriority `json:"priority"`
-	Assignedto  uuid.UUID   `json:"assignedto"`
 	ID          uuid.UUID   `json:"id"`
 }
 
@@ -315,7 +319,6 @@ func (q *Queries) UpdateBug(ctx context.Context, arg UpdateBugParams) (Bug, erro
 		arg.Description,
 		arg.Status,
 		arg.Priority,
-		arg.Assignedto,
 		arg.ID,
 	)
 	var i Bug
@@ -326,7 +329,8 @@ func (q *Queries) UpdateBug(ctx context.Context, arg UpdateBugParams) (Bug, erro
 		&i.Status,
 		&i.Priority,
 		&i.Assignedto,
-		&i.Assignedby,
+		&i.Assignedbyprofile,
+		&i.Assignedbyteam,
 		&i.Completed,
 		&i.Createdat,
 		&i.Updatedat,

@@ -61,11 +61,12 @@ CREATE TABLE IF NOT EXISTS bug(
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
-    status bugStatus NOT NULL,
+    status bugStatus NOT NULL DEFAULT 'PENDING',
     priority bugPriority NOT NULL,
     assignedTo UUID NOT NULL,
-    assignedBy UUID NOT NULL,
-    completed BOOLEAN DEFAULT FALSE,
+    assignedByProfile UUID NOT NULL,
+    assignedByTeam UUID NOT NULL,
+    completed BOOLEAN NOT NULL DEFAULT FALSE,
     createdAt TIMESTAMPTZ NOT NULL DEFAULT now(),
     updatedAt TIMESTAMPTZ NOT NULL DEFAULT now(),
     closedBy UUID,
@@ -75,6 +76,8 @@ CREATE TABLE IF NOT EXISTS bug(
 ALTER TABLE bug
 ADD FOREIGN KEY (assignedTo) REFERENCES team(id);
 ALTER TABLE bug
-ADD FOREIGN KEY (assignedBy) REFERENCES profile(id);
+ADD FOREIGN KEY (assignedByProfile) REFERENCES profile(id);
+ALTER TABLE bug
+ADD FOREIGN KEY (assignedByTeam) REFERENCES team(id);
 ALTER TABLE bug
 ADD FOREIGN KEY (closedBy) REFERENCES profile(id);

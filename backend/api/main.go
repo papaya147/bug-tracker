@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/papaya147/buggy/backend/api/bug"
 	"github.com/papaya147/buggy/backend/api/organisation"
 	"github.com/papaya147/buggy/backend/api/profile"
 	"github.com/papaya147/buggy/backend/api/team"
@@ -22,6 +23,7 @@ type server struct {
 	organisationHandler *organisation.Handler
 	teamMemberHandler   *teammember.Handler
 	teamHandler         *team.Handler
+	bugHandler          *bug.Handler
 	router              *chi.Mux
 }
 
@@ -38,6 +40,7 @@ func NewServer(store db.Store, maker token.Maker) *server {
 	server.organisationHandler = organisation.NewHandler(config, store, maker)
 	server.teamMemberHandler = teammember.NewHandler(config, store, maker)
 	server.teamHandler = team.NewHandler(config, store, maker)
+	server.bugHandler = bug.NewHandler(config, store, maker)
 	server.router = server.routes()
 
 	return server

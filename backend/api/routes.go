@@ -32,6 +32,7 @@ func (app *server) routes() *chi.Mux {
 		r.Mount("/organisation", app.organisationHandler.Routes())
 		r.Mount("/team-member", app.teamMemberHandler.Routes())
 		r.Mount("/team", app.teamHandler.Routes())
+		r.Mount("/bug", app.bugHandler.Routes())
 	})
 
 	router.Mount("/swagger", httpSwagger.WrapHandler)

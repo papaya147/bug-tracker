@@ -99,19 +99,20 @@ func (ns NullBugstatus) Value() (driver.Value, error) {
 }
 
 type Bug struct {
-	ID          uuid.UUID          `json:"id"`
-	Name        string             `json:"name"`
-	Description string             `json:"description"`
-	Status      Bugstatus          `json:"status"`
-	Priority    Bugpriority        `json:"priority"`
-	Assignedto  uuid.UUID          `json:"assignedto"`
-	Assignedby  uuid.UUID          `json:"assignedby"`
-	Completed   pgtype.Bool        `json:"completed"`
-	Createdat   time.Time          `json:"createdat"`
-	Updatedat   time.Time          `json:"updatedat"`
-	Closedby    pgtype.UUID        `json:"closedby"`
-	Remarks     pgtype.Text        `json:"remarks"`
-	Closedat    pgtype.Timestamptz `json:"closedat"`
+	ID                uuid.UUID          `json:"id"`
+	Name              string             `json:"name"`
+	Description       string             `json:"description"`
+	Status            Bugstatus          `json:"status"`
+	Priority          Bugpriority        `json:"priority"`
+	Assignedto        uuid.UUID          `json:"assignedto"`
+	Assignedbyprofile uuid.UUID          `json:"assignedbyprofile"`
+	Assignedbyteam    uuid.UUID          `json:"assignedbyteam"`
+	Completed         bool               `json:"completed"`
+	Createdat         time.Time          `json:"createdat"`
+	Updatedat         time.Time          `json:"updatedat"`
+	Closedby          pgtype.UUID        `json:"closedby"`
+	Remarks           pgtype.Text        `json:"remarks"`
+	Closedat          pgtype.Timestamptz `json:"closedat"`
 }
 
 type Organisation struct {

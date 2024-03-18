@@ -134,6 +134,7 @@ var (
 	ErrUnauthorised            = errors.New("unauthorised")
 	ErrTeamMemberAlreadyExists = errors.New("team member already exists")
 	ErrInvalidCookie           = errors.New("invalid cookie")
+	ErrDifferentOrganisation   = errors.New("teams not part of same organisation")
 )
 
 type CustomErrorDetails struct {

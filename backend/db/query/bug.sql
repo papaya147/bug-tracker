@@ -3,10 +3,10 @@ INSERT INTO bug(
         id,
         name,
         description,
-        status,
         priority,
         assignedTo,
-        assignedBy
+        assignedByProfile,
+        assignedByTeam
     )
 VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING *;
@@ -30,14 +30,13 @@ WHERE assignedTo = $1
 ORDER BY priority DESC,
     status DESC,
     completed DESC;
--- name: GetBugsByAsigneeTeam :many
-SELECT b.*
-FROM bug b
-    INNER JOIN teamMember tm ON b.assignedBy = tm.profile
-WHERE tm.team = $1
-ORDER BY b.priority DESC,
-    b.status DESC,
-    b.completed DESC;
+-- name: GetBugsByAssigneeTeam :many
+SELECT *
+FROM bug
+WHERE assignedByTeam = $1
+ORDER BY priority DESC,
+    status DESC,
+    completed DESC;
 -- name: CloseBug :one
 UPDATE bug
 SET completed = TRUE,
@@ -56,7 +55,6 @@ SET name = $1,
     description = $2,
     status = $3,
     priority = $4,
-    assignedTo = $5,
     updatedAt = NOW()
-WHERE id = $6
+WHERE id = $5
 RETURNING *;

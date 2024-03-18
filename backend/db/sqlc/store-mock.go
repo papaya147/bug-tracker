@@ -35,7 +35,7 @@ func (m *mockStore) GetBug(ctx context.Context, id uuid.UUID) (Bug, error) {
 }
 
 // GetBugsByAsigneeTeam implements Store.
-func (m *mockStore) GetBugsByAsigneeTeam(ctx context.Context, team uuid.UUID) ([]Bug, error) {
+func (m *mockStore) GetBugsByAssigneeTeam(ctx context.Context, team uuid.UUID) ([]Bug, error) {
 	return nil, nil
 }
 

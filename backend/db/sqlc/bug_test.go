@@ -14,13 +14,13 @@ func createRandomBug(t *testing.T) (Bug, Team, Teammember) {
 	_, team, member := createRandomTeamMember(t)
 
 	arg := CreateBugParams{
-		ID:          util.RandomUuid(),
-		Name:        util.RandomString(10),
-		Description: util.RandomString(100),
-		Status:      BugstatusPENDING,
-		Priority:    BugpriorityLOW,
-		Assignedto:  team.ID,
-		Assignedby:  member.Profile,
+		ID:                util.RandomUuid(),
+		Name:              util.RandomString(10),
+		Description:       util.RandomString(100),
+		Priority:          BugpriorityLOW,
+		Assignedto:        team.ID,
+		Assignedbyprofile: member.Profile,
+		Assignedbyteam:    member.Team,
 	}
 
 	bug, err := testQueries.CreateBug(context.Background(), arg)
@@ -29,10 +29,11 @@ func createRandomBug(t *testing.T) (Bug, Team, Teammember) {
 	require.Equal(t, arg.ID, bug.ID)
 	require.Equal(t, arg.Name, bug.Name)
 	require.Equal(t, arg.Description, bug.Description)
-	require.Equal(t, arg.Status, bug.Status)
+	require.Equal(t, BugstatusPENDING, bug.Status)
 	require.Equal(t, arg.Priority, bug.Priority)
 	require.Equal(t, arg.Assignedto, bug.Assignedto)
-	require.Equal(t, arg.Assignedby, bug.Assignedby)
+	require.Equal(t, arg.Assignedbyprofile, bug.Assignedbyprofile)
+	require.Equal(t, arg.Assignedbyteam, bug.Assignedbyteam)
 	require.NotZero(t, bug.Completed)
 	require.NotZero(t, bug.Createdat)
 	require.NotZero(t, bug.Updatedat)
@@ -56,7 +57,8 @@ func TestGetBug(t *testing.T) {
 	require.Equal(t, bug1.Status, bug2.Status)
 	require.Equal(t, bug1.Priority, bug2.Priority)
 	require.Equal(t, bug1.Assignedto, bug2.Assignedto)
-	require.Equal(t, bug1.Assignedby, bug2.Assignedby)
+	require.Equal(t, bug1.Assignedbyprofile, bug2.Assignedbyprofile)
+	require.Equal(t, bug1.Assignedbyteam, bug2.Assignedbyteam)
 	require.Equal(t, bug1.Completed, bug2.Completed)
 	require.WithinDuration(t, bug1.Createdat, bug2.Createdat, time.Second)
 	require.WithinDuration(t, bug1.Updatedat, bug2.Updatedat, time.Second)
@@ -64,14 +66,12 @@ func TestGetBug(t *testing.T) {
 
 func TestUpdateBug(t *testing.T) {
 	bug1, _, _ := createRandomBug(t)
-	_, team, _ := createRandomTeamMember(t)
 
 	arg := UpdateBugParams{
 		Name:        util.RandomString(10),
 		Description: util.RandomString(100),
 		Status:      BugstatusPENDING,
 		Priority:    BugpriorityLOW,
-		Assignedto:  team.ID,
 		ID:          bug1.ID,
 	}
 
@@ -83,7 +83,6 @@ func TestUpdateBug(t *testing.T) {
 	require.Equal(t, arg.Description, bug2.Description)
 	require.Equal(t, arg.Status, bug2.Status)
 	require.Equal(t, arg.Priority, bug2.Priority)
-	require.Equal(t, arg.Assignedto, bug2.Assignedto)
 	require.WithinDuration(t, bug1.Createdat, bug2.Createdat, time.Second)
 }
 
@@ -150,7 +149,7 @@ func TestGetBugsByAsigneeTeam(t *testing.T) {
 
 	arg := team.ID
 
-	bugs, err := testQueries.GetBugsByAsigneeTeam(context.Background(), arg)
+	bugs, err := testQueries.GetBugsByAssigneeTeam(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, bugs)
 	require.Contains(t, bugs, bug1)

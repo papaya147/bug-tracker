@@ -1,5 +1,132 @@
 basePath: /api/v1
 definitions:
+  bug.bugOutput:
+    properties:
+      assignedbyprofile:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      assignedbyteam:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      assignedto:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      closedat:
+        example: "1710579130"
+        type: string
+      closedby:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      completed:
+        example: false
+        type: boolean
+      createdat:
+        example: "1710579130"
+        type: string
+      description:
+        example: Input validation is not working
+        type: string
+      id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      name:
+        example: Improper Input Validation
+        type: string
+      priority:
+        allOf:
+        - $ref: '#/definitions/db.Bugpriority'
+        example: URGENT
+      remarks:
+        example: None
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/db.Bugstatus'
+        example: PENDING
+      updatedat:
+        example: "1710579130"
+        type: string
+    type: object
+  bug.createBugInput:
+    properties:
+      assigned_team:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      assignee_team:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      description:
+        example: Input validation is not working
+        maxLength: 255
+        type: string
+      name:
+        example: Improper Input Validation
+        maxLength: 32
+        type: string
+      priority:
+        allOf:
+        - $ref: '#/definitions/db.Bugpriority'
+        enum:
+        - URGENT
+        - HIGH
+        - LOW
+        example: URGENT
+    required:
+    - assigned_team
+    - assignee_team
+    - description
+    - name
+    - priority
+    type: object
+  bug.updateBugInput:
+    properties:
+      description:
+        example: Input validation is not working
+        maxLength: 255
+        type: string
+      id:
+        example: 00000000-0000-0000-0000-000000000000
+        type: string
+      name:
+        example: Improper Input Validation
+        maxLength: 32
+        type: string
+      priority:
+        allOf:
+        - $ref: '#/definitions/db.Bugpriority'
+        enum:
+        - URGENT
+        - HIGH
+        - LOW
+        example: URGENT
+      status:
+        allOf:
+        - $ref: '#/definitions/db.Bugstatus'
+        enum:
+        - PENDING
+        - PROCESSING
+        example: PENDING
+    required:
+    - id
+    type: object
+  db.Bugpriority:
+    enum:
+    - URGENT
+    - HIGH
+    - LOW
+    type: string
+    x-enum-varnames:
+    - BugpriorityURGENT
+    - BugpriorityHIGH
+    - BugpriorityLOW
+  db.Bugstatus:
+    enum:
+    - PENDING
+    - PROCESSING
+    type: string
+    x-enum-varnames:
+    - BugstatusPENDING
+    - BugstatusPROCESSING
   db.GetOrganisationTransfersTxResponse:
     properties:
       incoming_transfers:
@@ -329,6 +456,106 @@ info:
   title: Buggy APIs
   version: "1.0"
 paths:
+  /bug:
+    post:
+      consumes:
+      - application/json
+      description: Create a new bug, the assigned team and assignee team must be part
+        of the same organisation and the profile must be a part of the assignee team.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/bug.createBugInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/bug.bugOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Create a new bug.
+      tags:
+      - bug
+    put:
+      consumes:
+      - application/json
+      description: Update a bug, the profile must be a part of the assignee team.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/bug.updateBugInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/bug.bugOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Update a bug.
+      tags:
+      - bug
+  /bug/{bug-id}:
+    get:
+      description: Get a bug, the profile must be a part of the assigned or assignee
+        teams.
+      parameters:
+      - description: Bug ID
+        in: path
+        name: bug-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/bug.bugOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get a bug.
+      tags:
+      - bug
   /organisation:
     get:
       description: Get an organisation, this API will return an error if the organisation

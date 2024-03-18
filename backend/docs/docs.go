@@ -15,6 +15,155 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/bug": {
+            "put": {
+                "description": "Update a bug, the profile must be a part of the assignee team.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bug"
+                ],
+                "summary": "Update a bug.",
+                "parameters": [
+                    {
+                        "description": "json",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bug.updateBugInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/bug.bugOutput"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new bug, the assigned team and assignee team must be part of the same organisation and the profile must be a part of the assignee team.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bug"
+                ],
+                "summary": "Create a new bug.",
+                "parameters": [
+                    {
+                        "description": "json",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bug.createBugInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/bug.bugOutput"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/bug/{bug-id}": {
+            "get": {
+                "description": "Get a bug, the profile must be a part of the assigned or assignee teams.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bug"
+                ],
+                "summary": "Get a bug.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bug ID",
+                        "name": "bug-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/bug.bugOutput"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/organisation": {
             "get": {
                 "description": "Get an organisation, this API will return an error if the organisation does not exist.",
@@ -911,6 +1060,189 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "bug.bugOutput": {
+            "type": "object",
+            "properties": {
+                "assignedbyprofile": {
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                },
+                "assignedbyteam": {
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                },
+                "assignedto": {
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                },
+                "closedat": {
+                    "type": "string",
+                    "example": "1710579130"
+                },
+                "closedby": {
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                },
+                "completed": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "createdat": {
+                    "type": "string",
+                    "example": "1710579130"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Input validation is not working"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Improper Input Validation"
+                },
+                "priority": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/db.Bugpriority"
+                        }
+                    ],
+                    "example": "URGENT"
+                },
+                "remarks": {
+                    "type": "string",
+                    "example": "None"
+                },
+                "status": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/db.Bugstatus"
+                        }
+                    ],
+                    "example": "PENDING"
+                },
+                "updatedat": {
+                    "type": "string",
+                    "example": "1710579130"
+                }
+            }
+        },
+        "bug.createBugInput": {
+            "type": "object",
+            "required": [
+                "assigned_team",
+                "assignee_team",
+                "description",
+                "name",
+                "priority"
+            ],
+            "properties": {
+                "assigned_team": {
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                },
+                "assignee_team": {
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                },
+                "description": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Input validation is not working"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "example": "Improper Input Validation"
+                },
+                "priority": {
+                    "enum": [
+                        "URGENT",
+                        "HIGH",
+                        "LOW"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/db.Bugpriority"
+                        }
+                    ],
+                    "example": "URGENT"
+                }
+            }
+        },
+        "bug.updateBugInput": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Input validation is not working"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "00000000-0000-0000-0000-000000000000"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "example": "Improper Input Validation"
+                },
+                "priority": {
+                    "enum": [
+                        "URGENT",
+                        "HIGH",
+                        "LOW"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/db.Bugpriority"
+                        }
+                    ],
+                    "example": "URGENT"
+                },
+                "status": {
+                    "enum": [
+                        "PENDING",
+                        "PROCESSING"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/db.Bugstatus"
+                        }
+                    ],
+                    "example": "PENDING"
+                }
+            }
+        },
+        "db.Bugpriority": {
+            "type": "string",
+            "enum": [
+                "URGENT",
+                "HIGH",
+                "LOW"
+            ],
+            "x-enum-varnames": [
+                "BugpriorityURGENT",
+                "BugpriorityHIGH",
+                "BugpriorityLOW"
+            ]
+        },
+        "db.Bugstatus": {
+            "type": "string",
+            "enum": [
+                "PENDING",
+                "PROCESSING"
+            ],
+            "x-enum-varnames": [
+                "BugstatusPENDING",
+                "BugstatusPROCESSING"
+            ]
+        },
         "db.GetOrganisationTransfersTxResponse": {
             "type": "object",
             "properties": {
