@@ -525,6 +525,37 @@ paths:
       tags:
       - bug
   /bug/{bug-id}:
+    delete:
+      description: Delete a bug, the profile must be a part of the assigned or assignee
+        teams.
+      parameters:
+      - description: Bug ID
+        in: path
+        name: bug-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/bug.bugOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Delete a bug.
+      tags:
+      - bug
     get:
       description: Get a bug, the profile must be a part of the assigned or assignee
         teams.

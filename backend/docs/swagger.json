@@ -156,6 +156,51 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Delete a bug, the profile must be a part of the assigned or assignee teams.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bug"
+                ],
+                "summary": "Delete a bug.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bug ID",
+                        "name": "bug-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/bug.bugOutput"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    }
+                }
             }
         },
         "/organisation": {
