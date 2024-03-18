@@ -87,6 +87,41 @@ func (q *Queries) GetAllTeamMembers(ctx context.Context, team uuid.UUID) ([]GetA
 	return items, nil
 }
 
+const getAssignableOrganisations = `-- name: GetAssignableOrganisations :many
+SELECT DISTINCT o.id, o.name, o.description, o.owner, o.createdat, o.updatedat
+FROM teamMember tm
+    INNER JOIN team t ON tm.team = t.id
+    INNER JOIN organisation o ON o.id = t.organisation
+WHERE tm.profile = $1
+`
+
+func (q *Queries) GetAssignableOrganisations(ctx context.Context, profile uuid.UUID) ([]Organisation, error) {
+	rows, err := q.db.Query(ctx, getAssignableOrganisations, profile)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Organisation{}
+	for rows.Next() {
+		var i Organisation
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Owner,
+			&i.Createdat,
+			&i.Updatedat,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTeamMember = `-- name: GetTeamMember :one
 SELECT team, profile, admin, createdat, updatedat
 FROM teamMember

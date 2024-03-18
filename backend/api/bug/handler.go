@@ -33,6 +33,9 @@ func (handler *Handler) Routes() *chi.Mux {
 		r.Get("/{bug-id}", handler.get)
 		r.Put("/", handler.update)
 		r.Delete("/{bug-id}", handler.delete)
+		r.Get("/by-profile", handler.getByProfile)
+		r.Get("/organisations", handler.getOrganisations)
+		r.Get("/organisation/{organisation-id}/teams", handler.getOrganisationTeams)
 	})
 
 	return router

@@ -9,6 +9,16 @@ import (
 type mockStore struct {
 }
 
+// GetAssignableOrganisations implements Store.
+func (m *mockStore) GetAssignableOrganisations(ctx context.Context, profile uuid.UUID) ([]Organisation, error) {
+	return nil, nil
+}
+
+// GetAssignableTeams implements Store.
+func (m *mockStore) GetAssignableTeams(ctx context.Context, profile uuid.UUID) ([]Team, error) {
+	return nil, nil
+}
+
 // CloseBug implements Store.
 func (m *mockStore) CloseBug(ctx context.Context, arg CloseBugParams) (Bug, error) {
 	return Bug{}, nil

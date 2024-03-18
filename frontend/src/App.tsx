@@ -7,7 +7,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import NotFound from "./NotFound";
-import Home from "./pages/Home";
 import Login from "./pages/profile/Login";
 import { useEffect, useState } from "react";
 import Profile from "./model/Profile";
@@ -23,6 +22,8 @@ import OrganisationTeamHome from "./pages/organisation/team/OrganisationTeamHome
 import CreateOrganisationTeam from "./pages/organisation/team/CreateOrganisationTeam";
 import UpdateOrganisationTeam from "./pages/organisation/team/UpdateOrganisationTeam";
 import TeamHome from "./pages/team/TeamHome";
+import BugHome from "./pages/bug/BugHome";
+import CreateBug from "./pages/bug/CreateBug";
 
 function App() {
   return (
@@ -68,7 +69,6 @@ const Root = () => {
               <Login setProfile={setProfile} setLoggedIn={setLoggedIn} />
             }
           />
-          <Route path="/" element={<Home profile={profile} />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/organisation" element={<OrganisationHome />} />
           <Route path="/organisation/create" element={<CreateOrganisation />} />
@@ -99,6 +99,8 @@ const Root = () => {
           />
           <Route path="/teams" element={<TeamHome />} />
           <Route path="/teams/:id/members" element={<TeamMemberHome />} />
+          <Route path="/" element={<BugHome profile={profile} />} />
+          <Route path="/bug/create" element={<CreateBug />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

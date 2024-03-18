@@ -10,3 +10,9 @@ type teamOutput struct {
 	Description             string    `json:"description" example:"The Buggy testing team!"`
 	Admin                   bool      `json:"admin" example:"false"`
 }
+
+type assignableTeamOutput struct {
+	Id           uuid.UUID `json:"id" example:"6ba7b810-9dad-11d1-80b4-00c04fd430c8"`
+	Name         string    `json:"name" example:"testing team"`
+	AssigneeTeam uuid.UUID `json:"assignee_team" example:"6ba7b810-9dad-11d1-80b4-00c04fd430c8"`
+}

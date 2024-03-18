@@ -19,6 +19,7 @@ func TestCase(t *testing.T, method, route string, handler http.HandlerFunc, body
 
 	req = addChiURLParams(req, map[string]string{
 		"organisation-transfer-id": util.RandomUuid().String(),
+		"organisation-id":          util.RandomUuid().String(),
 		"team-id":                  util.RandomUuid().String(),
 		"bug-id":                   util.RandomUuid().String(),
 	})

@@ -23,6 +23,8 @@ const TeamCard: React.FC<Props> = ({
           Established {new Date(team.created_at * 1000).toLocaleDateString()}
         </p>
       )}
+      <h4>Organisation: {team.organisation_name}</h4>
+      <p>{team.organisation_description}</p>
       <button onClick={() => navigate(viewMembersLink)}>View Members</button>
       {showUpdateButton && (
         <button

@@ -32,3 +32,9 @@ FROM teamMember tm
     INNER JOIN team t ON tm.team = t.id
     INNER JOIN organisation o ON o.id = t.organisation
 WHERE tm.profile = $1;
+-- name: GetAssignableOrganisations :many
+SELECT DISTINCT o.*
+FROM teamMember tm
+    INNER JOIN team t ON tm.team = t.id
+    INNER JOIN organisation o ON o.id = t.organisation
+WHERE tm.profile = $1;

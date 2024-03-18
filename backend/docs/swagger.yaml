@@ -78,6 +78,45 @@ definitions:
     - name
     - priority
     type: object
+  bug.organisationOutput:
+    properties:
+      created_at:
+        example: 1710579130
+        type: integer
+      description:
+        example: The organisation for bugs!
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      name:
+        example: buggy org
+        type: string
+      owner:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      updated_at:
+        example: 1710579130
+        type: integer
+    type: object
+  bug.teamOutput:
+    properties:
+      created_at:
+        example: 1710579130
+        type: integer
+      description:
+        example: The Buggy testing team!
+        type: string
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      name:
+        example: testing team
+        type: string
+      updated_at:
+        example: 1710579130
+        type: integer
+    type: object
   bug.updateBugInput:
     properties:
       description:
@@ -585,6 +624,93 @@ paths:
           schema:
             $ref: '#/definitions/util.ErrorModel'
       summary: Get a bug.
+      tags:
+      - bug
+  /bug/by-profile:
+    get:
+      description: Get bugs assigned to teams this profile is a part of.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/bug.bugOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get bugs assigned to teams this profile is a part of.
+      tags:
+      - bug
+  /bug/organisation/{organisation-id}/teams:
+    get:
+      description: Get organisations this profile is part of.
+      parameters:
+      - description: Organisation ID
+        in: path
+        name: organisation-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/bug.teamOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get organisations this profile is part of.
+      tags:
+      - bug
+  /bug/organisations:
+    get:
+      description: Get organisations this profile is part of.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/bug.organisationOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get organisations this profile is part of.
       tags:
       - bug
   /organisation:

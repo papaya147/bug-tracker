@@ -29,7 +29,7 @@ func (handler *Handler) get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestPayload := bugId{
+	requestPayload := id{
 		Id: chi.URLParam(r, "bug-id"),
 	}
 	if err := util.ValidateRequest(requestPayload); err != nil {

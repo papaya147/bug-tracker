@@ -32,7 +32,7 @@ type bugOutput struct {
 	Closedat          *time.Time     `json:"closedat" example:"1710579130"`
 }
 
-type bugId struct {
+type id struct {
 	Id string `json:"id" validate:"required,uuid" example:"00000000-0000-0000-0000-000000000000"`
 }
 
@@ -42,4 +42,21 @@ type updateBugInput struct {
 	Description string         `json:"description" validate:"max=255" example:"Input validation is not working"`
 	Status      db.Bugstatus   `json:"status" validate:"oneof=PENDING PROCESSING" example:"PENDING"`
 	Priority    db.Bugpriority `json:"priority" validate:"oneof=URGENT HIGH LOW" example:"URGENT"`
+}
+
+type organisationOutput struct {
+	ID          uuid.UUID `json:"id" example:"6ba7b810-9dad-11d1-80b4-00c04fd430c8"`
+	Name        string    `json:"name" example:"buggy org"`
+	Description string    `json:"description" example:"The organisation for bugs!"`
+	Owner       uuid.UUID `json:"owner" example:"6ba7b810-9dad-11d1-80b4-00c04fd430c8"`
+	CreatedAt   int64     `json:"created_at" example:"1710579130"`
+	UpdatedAt   int64     `json:"updated_at" example:"1710579130"`
+}
+
+type teamOutput struct {
+	Id          uuid.UUID `json:"id" example:"6ba7b810-9dad-11d1-80b4-00c04fd430c8"`
+	Name        string    `json:"name" example:"testing team"`
+	Description string    `json:"description" example:"The Buggy testing team!"`
+	CreatedAt   int64     `json:"created_at" example:"1710579130"`
+	UpdatedAt   int64     `json:"updated_at" example:"1710579130"`
 }

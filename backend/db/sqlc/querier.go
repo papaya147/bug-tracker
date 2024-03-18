@@ -24,6 +24,7 @@ type Querier interface {
 	GetActiveBugsByProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error)
 	GetActiveOrganisationTransfer(ctx context.Context, organisation uuid.UUID) (Organisationtransfer, error)
 	GetAllTeamMembers(ctx context.Context, team uuid.UUID) ([]GetAllTeamMembersRow, error)
+	GetAssignableOrganisations(ctx context.Context, profile uuid.UUID) ([]Organisation, error)
 	GetBug(ctx context.Context, id uuid.UUID) (Bug, error)
 	GetBugsByAssignedTeam(ctx context.Context, assignedto uuid.UUID) ([]Bug, error)
 	GetBugsByAssigneeTeam(ctx context.Context, assignedbyteam uuid.UUID) ([]Bug, error)
