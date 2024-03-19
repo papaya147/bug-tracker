@@ -8,5 +8,5 @@ import (
 )
 
 func TestGetByProfile(t *testing.T) {
-	test.TestCase(t, http.MethodGet, "/by-profile", testHandler.getByProfile, nil, http.StatusOK)
+	test.TestCase(t, http.MethodGet, "/by-profile", testHandler.getByAssigned, nil, http.StatusOK)
 }

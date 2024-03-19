@@ -3,8 +3,10 @@ import Bug from "../../model/Bug";
 import apiV1BaseUrl from "../api";
 import { BugsResponse } from "./bugResponse";
 
-const getBugsByAssignedTeam = async (): Promise<BugsResponse> => {
-  const res = await fetch(apiV1BaseUrl + "/bug/by-profile", {
+const getBugsByAssigneeTeam = async (
+  team_id: string
+): Promise<BugsResponse> => {
+  const res = await fetch(apiV1BaseUrl + `/bug/by-assignee-team/${team_id}`, {
     credentials: "include",
   });
   const data = await res.json();
@@ -13,4 +15,4 @@ const getBugsByAssignedTeam = async (): Promise<BugsResponse> => {
   return { bugs, error };
 };
 
-export default getBugsByAssignedTeam;
+export default getBugsByAssigneeTeam;

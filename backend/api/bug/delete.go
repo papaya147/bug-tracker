@@ -3,6 +3,7 @@ package bug
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -64,9 +65,15 @@ func (handler *Handler) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	closedBy, _ := uuid.FromBytes(bug.Closedby.Bytes[:])
-	remarks := bug.Remarks.String
-	closedAt := bug.Closedat.Time
+	var closedBy *uuid.UUID = nil
+	var remarks *string = nil
+	var closedAt *time.Time = nil
+	if bug.Closedby.Valid {
+		t, _ := uuid.FromBytes(bug.Closedby.Bytes[:])
+		closedBy = &t
+		remarks = &bug.Remarks.String
+		closedAt = &bug.Closedat.Time
+	}
 
 	util.WriteJson(w, http.StatusOK, bugOutput{
 		Id:                bug.ID,
@@ -80,8 +87,8 @@ func (handler *Handler) delete(w http.ResponseWriter, r *http.Request) {
 		Completed:         bug.Completed,
 		Createdat:         bug.Createdat,
 		Updatedat:         bug.Updatedat,
-		Closedby:          &closedBy,
-		Remarks:           &remarks,
-		Closedat:          &closedAt,
+		Closedby:          closedBy,
+		Remarks:           remarks,
+		Closedat:          closedAt,
 	})
 }

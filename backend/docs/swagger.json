@@ -111,7 +111,7 @@
                 }
             }
         },
-        "/bug/by-profile": {
+        "/bug/by-assigned": {
             "get": {
                 "description": "Get bugs assigned to teams this profile is a part of.",
                 "produces": [
@@ -121,6 +121,56 @@
                     "bug"
                 ],
                 "summary": "Get bugs assigned to teams this profile is a part of.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/bug.bugOutput"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/bug/by-assignee-team/{team-id}": {
+            "get": {
+                "description": "Get bugs assigned by this team.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bug"
+                ],
+                "summary": "Get bugs assigned by this team.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Team ID",
+                        "name": "team-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

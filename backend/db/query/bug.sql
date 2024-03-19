@@ -12,9 +12,9 @@ VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING *;
 -- name: GetBug :one
 SELECT *
-FROM bug b
+FROM bug
 WHERE id = $1;
--- name: GetActiveBugsByProfile :many
+-- name: GetActiveBugsByAssignedProfile :many
 SELECT b.*
 FROM bug b
     INNER JOIN team t ON b.assignedTo = t.id
@@ -23,6 +23,15 @@ WHERE tm.profile = $1
     AND completed = FALSE
 ORDER BY b.priority,
     b.status;
+-- name: GetBugsByAssigneeProfile :many
+SELECT b.*
+FROM bug b
+    INNER JOIN team t ON b.assignedByTeam = t.id
+    INNER JOIN teamMember tm ON t.id = tm.team
+WHERE tm.profile = $1
+ORDER BY b.priority,
+    b.status,
+    b.completed;
 -- name: GetBugsByAssignedTeam :many
 SELECT *
 FROM bug

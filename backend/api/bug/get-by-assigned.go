@@ -19,15 +19,15 @@ import (
 // @Failure      400  {object}  util.ErrorModel
 // @Failure      404  {object}  util.ErrorModel
 // @Failure      500  {object}  util.ErrorModel
-// @Router       /bug/by-profile [get]
-func (handler *Handler) getByProfile(w http.ResponseWriter, r *http.Request) {
+// @Router       /bug/by-assigned [get]
+func (handler *Handler) getByAssigned(w http.ResponseWriter, r *http.Request) {
 	payload, err := token.GetTokenDetail(r.Context(), token.AccessToken)
 	if err != nil {
 		util.NewErrorAndWrite(w, err)
 		return
 	}
 
-	bugs, err := handler.store.GetActiveBugsByProfile(r.Context(), payload.UserId)
+	bugs, err := handler.store.GetActiveBugsByAssignedProfile(r.Context(), payload.UserId)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			util.NewErrorAndWrite(w, util.ErrEntityDoesNotExist)

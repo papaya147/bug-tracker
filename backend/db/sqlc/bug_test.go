@@ -122,12 +122,12 @@ func TestCloseBug(t *testing.T) {
 	require.Equal(t, arg.Remarks, bug2.Remarks)
 }
 
-func TestGetActiveBugsByProfile(t *testing.T) {
+func TestGetActiveBugsByAssignedProfile(t *testing.T) {
 	bug1, _, member := createRandomBug(t)
 
 	arg := member.Profile
 
-	bugs, err := testQueries.GetActiveBugsByProfile(context.Background(), arg)
+	bugs, err := testQueries.GetActiveBugsByAssignedProfile(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, bugs)
 	require.Contains(t, bugs, bug1)

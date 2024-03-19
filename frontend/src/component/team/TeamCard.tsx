@@ -25,6 +25,11 @@ const TeamCard: React.FC<Props> = ({
       )}
       <h4>Organisation: {team.organisation_name}</h4>
       <p>{team.organisation_description}</p>
+      {!showUpdateButton && (
+        <button onClick={() => navigate(`/teams/${team.id}/bugs`)}>
+          View Bugs
+        </button>
+      )}
       <button onClick={() => navigate(viewMembersLink)}>View Members</button>
       {showUpdateButton && (
         <button

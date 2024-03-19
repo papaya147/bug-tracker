@@ -626,7 +626,7 @@ paths:
       summary: Get a bug.
       tags:
       - bug
-  /bug/by-profile:
+  /bug/by-assigned:
     get:
       description: Get bugs assigned to teams this profile is a part of.
       produces:
@@ -651,6 +651,39 @@ paths:
           schema:
             $ref: '#/definitions/util.ErrorModel'
       summary: Get bugs assigned to teams this profile is a part of.
+      tags:
+      - bug
+  /bug/by-assignee-team/{team-id}:
+    get:
+      description: Get bugs assigned by this team.
+      parameters:
+      - description: Team ID
+        in: path
+        name: team-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/bug.bugOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get bugs assigned by this team.
       tags:
       - bug
   /bug/organisation/{organisation-id}/teams:

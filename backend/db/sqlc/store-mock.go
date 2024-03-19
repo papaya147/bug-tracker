@@ -9,6 +9,11 @@ import (
 type mockStore struct {
 }
 
+// GetBugsByAssigneeProfile implements Store.
+func (m *mockStore) GetBugsByAssigneeProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
+	return nil, nil
+}
+
 // GetTeamsByProfileAndOrganisation implements Store.
 func (m *mockStore) GetTeamsByProfileAndOrganisation(ctx context.Context, arg GetTeamsByProfileAndOrganisationParams) ([]GetTeamsByProfileAndOrganisationRow, error) {
 	return nil, nil
@@ -40,7 +45,7 @@ func (m *mockStore) DeleteBug(ctx context.Context, id uuid.UUID) (Bug, error) {
 }
 
 // GetActiveBugsByProfile implements Store.
-func (m *mockStore) GetActiveBugsByProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
+func (m *mockStore) GetActiveBugsByAssignedProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
 	return nil, nil
 }
 

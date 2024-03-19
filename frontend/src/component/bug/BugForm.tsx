@@ -7,15 +7,14 @@ import getAssignableOrganisations from "../../requests/bug/getAssignableOrganisa
 import Team from "../../model/Team";
 import ServerError from "../../error/ServerError";
 import getAssignableTeams from "../../requests/bug/getAssignableTeams";
-import getAssigneeTeams from "../../requests/bug/getAsigneeTeams";
+import getAssigneeTeams from "../../requests/bug/getAssigneeTeams";
 
 interface Props {
   formTitle: string;
   formButtonText: string;
   defaultName: string | undefined;
   defaultDescription: string | undefined;
-  defaultAssignedTeam: string | undefined;
-  defaultAssigneeTeam: string | undefined;
+  editing: boolean | undefined;
   defaultPriority: string | undefined;
   sendDataToParent: (
     name: string,
@@ -31,8 +30,7 @@ const BugForm: React.FC<Props> = ({
   formButtonText,
   defaultName,
   defaultDescription,
-  defaultAssignedTeam,
-  defaultAssigneeTeam,
+  editing,
   defaultPriority,
   sendDataToParent,
 }) => {
@@ -54,16 +52,8 @@ const BugForm: React.FC<Props> = ({
   useEffect(() => {
     if (defaultName) setName(defaultName);
     if (defaultDescription) setDescription(defaultDescription);
-    if (defaultAssignedTeam) setAssignedTeam(defaultAssignedTeam);
-    if (defaultAssigneeTeam) setAssigneeTeam(defaultAssigneeTeam);
     if (defaultPriority) setPriority(defaultPriority);
-  }, [
-    defaultAssignedTeam,
-    defaultAssigneeTeam,
-    defaultDescription,
-    defaultName,
-    defaultPriority,
-  ]);
+  }, [defaultDescription, defaultName, defaultPriority]);
 
   useEffect(() => {
     getAssignableOrganisations().then((data) => {
@@ -108,51 +98,60 @@ const BugForm: React.FC<Props> = ({
     <div className="form">
       <h2>{formTitle}</h2>
       <form onSubmit={handleSubmit}>
-        <label>Organisation</label>
-        <select
-          value={organisation}
-          onChange={(e) => setOrganisation(e.target.value)}
-          disabled={!!defaultAssignedTeam}
-        >
-          {assignableOrganisations &&
-            assignableOrganisations.map((org) => {
-              return (
-                <option value={org.id} key={org.id}>
-                  {org.name}
-                </option>
-              );
-            })}
-        </select>
-        <label>Assignee Team</label>
-        <select
-          value={assigneeTeam}
-          onChange={(e) => setAssigneeTeam(e.target.value)}
-          disabled={!!defaultAssignedTeam}
-        >
-          {assigneeTeams &&
-            assigneeTeams.map((team) => {
-              return (
-                <option value={team.id} key={team.id}>
-                  {team.name}
-                </option>
-              );
-            })}
-        </select>
-        <label>Assigned Team</label>
-        <select
-          value={assignedTeam}
-          onChange={(e) => setAssignedTeam(e.target.value)}
-          disabled={!defaultAssigneeTeam}
-        >
-          {assignableTeams &&
-            assignableTeams.map((team) => {
-              return (
-                <option value={team.id} key={team.id}>
-                  {team.name}
-                </option>
-              );
-            })}
-        </select>
+        {!editing && (
+          <div>
+            <label>Organisation</label>
+            <select
+              value={organisation}
+              onChange={(e) => setOrganisation(e.target.value)}
+            >
+              {assignableOrganisations &&
+                assignableOrganisations.map((org) => {
+                  return (
+                    <option value={org.id} key={org.id}>
+                      {org.name}
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
+        )}
+        {!editing && (
+          <div>
+            <label>Assignee Team</label>
+            <select
+              value={assigneeTeam}
+              onChange={(e) => setAssigneeTeam(e.target.value)}
+            >
+              {assigneeTeams &&
+                assigneeTeams.map((team) => {
+                  return (
+                    <option value={team.id} key={team.id}>
+                      {team.name}
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
+        )}
+        {!editing && (
+          <div>
+            <label>Assigned Team</label>
+            <select
+              value={assignedTeam}
+              onChange={(e) => setAssignedTeam(e.target.value)}
+            >
+              {assignableTeams &&
+                assignableTeams.map((team) => {
+                  return (
+                    <option value={team.id} key={team.id}>
+                      {team.name}
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
+        )}
         <label>Name</label>
         <input
           required

@@ -132,7 +132,7 @@ func (q *Queries) DeleteBug(ctx context.Context, id uuid.UUID) (Bug, error) {
 	return i, err
 }
 
-const getActiveBugsByProfile = `-- name: GetActiveBugsByProfile :many
+const getActiveBugsByAssignedProfile = `-- name: GetActiveBugsByAssignedProfile :many
 SELECT b.id, b.name, b.description, b.status, b.priority, b.assignedto, b.assignedbyprofile, b.assignedbyteam, b.completed, b.createdat, b.updatedat, b.closedby, b.remarks, b.closedat
 FROM bug b
     INNER JOIN team t ON b.assignedTo = t.id
@@ -143,8 +143,8 @@ ORDER BY b.priority,
     b.status
 `
 
-func (q *Queries) GetActiveBugsByProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
-	rows, err := q.db.Query(ctx, getActiveBugsByProfile, profile)
+func (q *Queries) GetActiveBugsByAssignedProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
+	rows, err := q.db.Query(ctx, getActiveBugsByAssignedProfile, profile)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +180,7 @@ func (q *Queries) GetActiveBugsByProfile(ctx context.Context, profile uuid.UUID)
 
 const getBug = `-- name: GetBug :one
 SELECT id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
-FROM bug b
+FROM bug
 WHERE id = $1
 `
 
@@ -217,6 +217,52 @@ ORDER BY priority,
 
 func (q *Queries) GetBugsByAssignedTeam(ctx context.Context, assignedto uuid.UUID) ([]Bug, error) {
 	rows, err := q.db.Query(ctx, getBugsByAssignedTeam, assignedto)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Bug{}
+	for rows.Next() {
+		var i Bug
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Status,
+			&i.Priority,
+			&i.Assignedto,
+			&i.Assignedbyprofile,
+			&i.Assignedbyteam,
+			&i.Completed,
+			&i.Createdat,
+			&i.Updatedat,
+			&i.Closedby,
+			&i.Remarks,
+			&i.Closedat,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getBugsByAssigneeProfile = `-- name: GetBugsByAssigneeProfile :many
+SELECT b.id, b.name, b.description, b.status, b.priority, b.assignedto, b.assignedbyprofile, b.assignedbyteam, b.completed, b.createdat, b.updatedat, b.closedby, b.remarks, b.closedat
+FROM bug b
+    INNER JOIN team t ON b.assignedByTeam = t.id
+    INNER JOIN teamMember tm ON t.id = tm.team
+WHERE tm.profile = $1
+ORDER BY b.priority,
+    b.status,
+    b.completed
+`
+
+func (q *Queries) GetBugsByAssigneeProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
+	rows, err := q.db.Query(ctx, getBugsByAssigneeProfile, profile)
 	if err != nil {
 		return nil, err
 	}

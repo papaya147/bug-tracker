@@ -29,8 +29,7 @@ const CreateBug = () => {
     <BugForm
       defaultName=""
       defaultDescription=""
-      defaultAssignedTeam=""
-      defaultAssigneeTeam=""
+      editing={false}
       defaultPriority=""
       formTitle="Create Bug"
       formButtonText="Create"

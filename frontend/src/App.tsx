@@ -24,6 +24,8 @@ import UpdateOrganisationTeam from "./pages/organisation/team/UpdateOrganisation
 import TeamHome from "./pages/team/TeamHome";
 import BugHome from "./pages/bug/BugHome";
 import CreateBug from "./pages/bug/CreateBug";
+import TeamBugHome from "./pages/team/TeamBugHome";
+import UpdateBug from "./pages/bug/UpdateBug";
 
 function App() {
   return (
@@ -98,9 +100,11 @@ const Root = () => {
             element={<UpdateTeamMember isOrganisationChild={true} />}
           />
           <Route path="/teams" element={<TeamHome />} />
+          <Route path="/teams/:id/bugs" element={<TeamBugHome />} />
           <Route path="/teams/:id/members" element={<TeamMemberHome />} />
           <Route path="/" element={<BugHome profile={profile} />} />
           <Route path="/bug/create" element={<CreateBug />} />
+          <Route path="/bug/:id/update" element={<UpdateBug />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
