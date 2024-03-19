@@ -9,6 +9,11 @@ import (
 type mockStore struct {
 }
 
+// GetTeamsByProfileAndOrganisation implements Store.
+func (m *mockStore) GetTeamsByProfileAndOrganisation(ctx context.Context, arg GetTeamsByProfileAndOrganisationParams) ([]GetTeamsByProfileAndOrganisationRow, error) {
+	return nil, nil
+}
+
 // GetAssignableOrganisations implements Store.
 func (m *mockStore) GetAssignableOrganisations(ctx context.Context, profile uuid.UUID) ([]Organisation, error) {
 	return nil, nil
@@ -65,7 +70,7 @@ func (m *mockStore) GetOrganisation(ctx context.Context, id uuid.UUID) (Organisa
 }
 
 // GetTeams implements Store.
-func (m *mockStore) GetTeams(ctx context.Context, profile uuid.UUID) ([]GetTeamsRow, error) {
+func (m *mockStore) GetTeamsByProfile(ctx context.Context, profile uuid.UUID) ([]GetTeamsByProfileRow, error) {
 	return nil, nil
 }
 

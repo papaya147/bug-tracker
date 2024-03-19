@@ -4,36 +4,66 @@ import Organisation from "../../model/Organisation";
 import ErrorList from "../../error/ErrorList";
 import { useNavigate } from "react-router-dom";
 import getAssignableOrganisations from "../../requests/bug/getAssignableOrganisations";
-import getAssigneeTeams from "../../requests/bug/getAssigneeTeams";
 import Team from "../../model/Team";
+import ServerError from "../../error/ServerError";
+import getAssignableTeams from "../../requests/bug/getAssignableTeams";
+import getAssigneeTeams from "../../requests/bug/getAsigneeTeams";
 
 interface Props {
   formTitle: string;
   formButtonText: string;
   defaultName: string | undefined;
   defaultDescription: string | undefined;
+  defaultAssignedTeam: string | undefined;
+  defaultAssigneeTeam: string | undefined;
+  defaultPriority: string | undefined;
   sendDataToParent: (
     name: string,
-    description: string
+    description: string,
+    assignedTeam: string,
+    assigneeTeam: string,
+    priority: string
   ) => Promise<ErrorModel | null>;
 }
 
-const BugForm: React.FC<Props> = ({ formTitle, formButtonText }) => {
+const BugForm: React.FC<Props> = ({
+  formTitle,
+  formButtonText,
+  defaultName,
+  defaultDescription,
+  defaultAssignedTeam,
+  defaultAssigneeTeam,
+  defaultPriority,
+  sendDataToParent,
+}) => {
   const [organisation, setOrganisation] = useState("");
   const [assignableOrganisations, setAssignableOrganisations] = useState<
     Organisation[] | null
   >(null);
   const [assigneeTeam, setAssigneeTeam] = useState("");
-  const [organisationTeams, setOrganisationTeams] = useState<Team[] | null>(
-    null
-  );
+  const [assigneeTeams, setAssigneeTeams] = useState<Team[] | null>(null);
   const [assignedTeam, setAssignedTeam] = useState("");
+  const [assignableTeams, setAssignableTeams] = useState<Team[] | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("");
+  const [priority, setPriority] = useState("LOW");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorModel | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (defaultName) setName(defaultName);
+    if (defaultDescription) setDescription(defaultDescription);
+    if (defaultAssignedTeam) setAssignedTeam(defaultAssignedTeam);
+    if (defaultAssigneeTeam) setAssigneeTeam(defaultAssigneeTeam);
+    if (defaultPriority) setPriority(defaultPriority);
+  }, [
+    defaultAssignedTeam,
+    defaultAssigneeTeam,
+    defaultDescription,
+    defaultName,
+    defaultPriority,
+  ]);
 
   useEffect(() => {
     getAssignableOrganisations().then((data) => {
@@ -48,14 +78,31 @@ const BugForm: React.FC<Props> = ({ formTitle, formButtonText }) => {
     if (!organisation) return;
     getAssigneeTeams(organisation).then((data) => {
       if (!data.error.errors) {
-        setOrganisationTeams(data.teams);
+        setAssigneeTeams(data.teams);
         setAssigneeTeam(data.teams[0]?.id);
-        setAssignedTeam(data.teams[0]?.id);
       } else setError(data.error);
+    });
+    getAssignableTeams(organisation).then((data) => {
+      if (!data.error.errors) {
+        setAssignableTeams(data.teams);
+        setAssignedTeam(data.teams[0]?.id);
+      }
     });
   }, [organisation]);
 
-  const handleSubmit = (e: React.FormEvent) => {};
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    sendDataToParent(name, description, assignedTeam, assigneeTeam, priority)
+      .then((error) => {
+        setError(error);
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setError(ServerError);
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div className="form">
@@ -65,6 +112,7 @@ const BugForm: React.FC<Props> = ({ formTitle, formButtonText }) => {
         <select
           value={organisation}
           onChange={(e) => setOrganisation(e.target.value)}
+          disabled={!!defaultAssignedTeam}
         >
           {assignableOrganisations &&
             assignableOrganisations.map((org) => {
@@ -79,9 +127,10 @@ const BugForm: React.FC<Props> = ({ formTitle, formButtonText }) => {
         <select
           value={assigneeTeam}
           onChange={(e) => setAssigneeTeam(e.target.value)}
+          disabled={!!defaultAssignedTeam}
         >
-          {organisationTeams &&
-            organisationTeams.map((team) => {
+          {assigneeTeams &&
+            assigneeTeams.map((team) => {
               return (
                 <option value={team.id} key={team.id}>
                   {team.name}
@@ -93,9 +142,10 @@ const BugForm: React.FC<Props> = ({ formTitle, formButtonText }) => {
         <select
           value={assignedTeam}
           onChange={(e) => setAssignedTeam(e.target.value)}
+          disabled={!defaultAssigneeTeam}
         >
-          {organisationTeams &&
-            organisationTeams.map((team) => {
+          {assignableTeams &&
+            assignableTeams.map((team) => {
               return (
                 <option value={team.id} key={team.id}>
                   {team.name}
@@ -103,12 +153,24 @@ const BugForm: React.FC<Props> = ({ formTitle, formButtonText }) => {
               );
             })}
         </select>
+        <label>Name</label>
+        <input
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <label>Description</label>
         <textarea
           required
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        <label>Priority</label>
+        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+          <option value="URGENT">Urgent</option>
+          <option value="HIGH">High</option>
+          <option value="LOW">Low</option>
+        </select>
         {!isLoading && <button type="submit">{formButtonText}</button>}
         {isLoading && <button disabled>Loading...</button>}
         {error && <ErrorList messages={error} />}

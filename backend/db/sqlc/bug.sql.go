@@ -139,8 +139,8 @@ FROM bug b
     INNER JOIN teamMember tm ON t.id = tm.team
 WHERE tm.profile = $1
     AND completed = FALSE
-ORDER BY b.priority DESC,
-    b.status DESC
+ORDER BY b.priority,
+    b.status
 `
 
 func (q *Queries) GetActiveBugsByProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
@@ -210,8 +210,8 @@ const getBugsByAssignedTeam = `-- name: GetBugsByAssignedTeam :many
 SELECT id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
 FROM bug
 WHERE assignedTo = $1
-ORDER BY priority DESC,
-    status DESC,
+ORDER BY priority,
+    status,
     completed DESC
 `
 
@@ -254,8 +254,8 @@ const getBugsByAssigneeTeam = `-- name: GetBugsByAssigneeTeam :many
 SELECT id, name, description, status, priority, assignedto, assignedbyprofile, assignedbyteam, completed, createdat, updatedat, closedby, remarks, closedat
 FROM bug
 WHERE assignedByTeam = $1
-ORDER BY priority DESC,
-    status DESC,
+ORDER BY priority,
+    status,
     completed DESC
 `
 

@@ -21,21 +21,21 @@ FROM bug b
     INNER JOIN teamMember tm ON t.id = tm.team
 WHERE tm.profile = $1
     AND completed = FALSE
-ORDER BY b.priority DESC,
-    b.status DESC;
+ORDER BY b.priority,
+    b.status;
 -- name: GetBugsByAssignedTeam :many
 SELECT *
 FROM bug
 WHERE assignedTo = $1
-ORDER BY priority DESC,
-    status DESC,
+ORDER BY priority,
+    status,
     completed DESC;
 -- name: GetBugsByAssigneeTeam :many
 SELECT *
 FROM bug
 WHERE assignedByTeam = $1
-ORDER BY priority DESC,
-    status DESC,
+ORDER BY priority,
+    status,
     completed DESC;
 -- name: CloseBug :one
 UPDATE bug

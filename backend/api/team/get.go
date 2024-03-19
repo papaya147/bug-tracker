@@ -26,7 +26,7 @@ func (h *Handler) get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	teams, err := h.store.GetTeams(r.Context(), payload.UserId)
+	teams, err := h.store.GetTeamsByProfile(r.Context(), payload.UserId)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			util.NewErrorAndWrite(w, util.ErrEntityDoesNotExist)

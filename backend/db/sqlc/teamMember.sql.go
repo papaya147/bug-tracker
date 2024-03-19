@@ -148,7 +148,7 @@ func (q *Queries) GetTeamMember(ctx context.Context, arg GetTeamMemberParams) (T
 	return i, err
 }
 
-const getTeams = `-- name: GetTeams :many
+const getTeamsByProfile = `-- name: GetTeamsByProfile :many
 SELECT t.name as teamName,
     t.description as teamDescription,
     t.id as teamId,
@@ -161,7 +161,7 @@ FROM teamMember tm
 WHERE tm.profile = $1
 `
 
-type GetTeamsRow struct {
+type GetTeamsByProfileRow struct {
 	Teamname        string    `json:"teamname"`
 	Teamdescription string    `json:"teamdescription"`
 	Teamid          uuid.UUID `json:"teamid"`
@@ -170,15 +170,70 @@ type GetTeamsRow struct {
 	Admin           bool      `json:"admin"`
 }
 
-func (q *Queries) GetTeams(ctx context.Context, profile uuid.UUID) ([]GetTeamsRow, error) {
-	rows, err := q.db.Query(ctx, getTeams, profile)
+func (q *Queries) GetTeamsByProfile(ctx context.Context, profile uuid.UUID) ([]GetTeamsByProfileRow, error) {
+	rows, err := q.db.Query(ctx, getTeamsByProfile, profile)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetTeamsRow{}
+	items := []GetTeamsByProfileRow{}
 	for rows.Next() {
-		var i GetTeamsRow
+		var i GetTeamsByProfileRow
+		if err := rows.Scan(
+			&i.Teamname,
+			&i.Teamdescription,
+			&i.Teamid,
+			&i.Orgname,
+			&i.Orgdescription,
+			&i.Admin,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTeamsByProfileAndOrganisation = `-- name: GetTeamsByProfileAndOrganisation :many
+SELECT t.name as teamName,
+    t.description as teamDescription,
+    t.id as teamId,
+    o.name as orgName,
+    o.description as orgDescription,
+    tm.admin
+FROM teamMember tm
+    INNER JOIN team t ON tm.team = t.id
+    INNER JOIN organisation o ON o.id = t.organisation
+WHERE tm.profile = $1
+    AND o.id = $2
+`
+
+type GetTeamsByProfileAndOrganisationParams struct {
+	Profile uuid.UUID `json:"profile"`
+	ID      uuid.UUID `json:"id"`
+}
+
+type GetTeamsByProfileAndOrganisationRow struct {
+	Teamname        string    `json:"teamname"`
+	Teamdescription string    `json:"teamdescription"`
+	Teamid          uuid.UUID `json:"teamid"`
+	Orgname         string    `json:"orgname"`
+	Orgdescription  string    `json:"orgdescription"`
+	Admin           bool      `json:"admin"`
+}
+
+func (q *Queries) GetTeamsByProfileAndOrganisation(ctx context.Context, arg GetTeamsByProfileAndOrganisationParams) ([]GetTeamsByProfileAndOrganisationRow, error) {
+	rows, err := q.db.Query(ctx, getTeamsByProfileAndOrganisation, arg.Profile, arg.ID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetTeamsByProfileAndOrganisationRow{}
+	for rows.Next() {
+		var i GetTeamsByProfileAndOrganisationRow
 		if err := rows.Scan(
 			&i.Teamname,
 			&i.Teamdescription,

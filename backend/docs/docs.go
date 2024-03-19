@@ -160,14 +160,64 @@ const docTemplate = `{
         },
         "/bug/organisation/{organisation-id}/teams": {
             "get": {
-                "description": "Get organisations this profile is part of.",
+                "description": "Get organisations this profile can assign bugs to within an organsiation.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "bug"
                 ],
-                "summary": "Get organisations this profile is part of.",
+                "summary": "Get organisations this profile can assign bugs to within an organsiation.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organisation ID",
+                        "name": "organisation-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/bug.teamOutput"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/bug/organisation/{organisation-id}/teams-by-profile": {
+            "get": {
+                "description": "Get teams this profile is part of.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bug"
+                ],
+                "summary": "Get teams this profile is part of.",
                 "parameters": [
                     {
                         "type": "string",
@@ -1240,23 +1290,23 @@ const docTemplate = `{
         "bug.bugOutput": {
             "type": "object",
             "properties": {
-                "assignedbyprofile": {
+                "assigned_by_profile": {
                     "type": "string",
                     "example": "00000000-0000-0000-0000-000000000000"
                 },
-                "assignedbyteam": {
+                "assigned_by_team": {
                     "type": "string",
                     "example": "00000000-0000-0000-0000-000000000000"
                 },
-                "assignedto": {
+                "assigned_to": {
                     "type": "string",
                     "example": "00000000-0000-0000-0000-000000000000"
                 },
-                "closedat": {
+                "closed_at": {
                     "type": "string",
                     "example": "1710579130"
                 },
-                "closedby": {
+                "closed_by": {
                     "type": "string",
                     "example": "00000000-0000-0000-0000-000000000000"
                 },
@@ -1264,7 +1314,7 @@ const docTemplate = `{
                     "type": "boolean",
                     "example": false
                 },
-                "createdat": {
+                "created_at": {
                     "type": "string",
                     "example": "1710579130"
                 },
@@ -1300,7 +1350,7 @@ const docTemplate = `{
                     ],
                     "example": "PENDING"
                 },
-                "updatedat": {
+                "updated_at": {
                     "type": "string",
                     "example": "1710579130"
                 }

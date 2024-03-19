@@ -89,7 +89,7 @@ func TestGetTeams(t *testing.T) {
 
 	arg := member.Profile
 
-	teams, err := testQueries.GetTeams(context.Background(), arg)
+	teams, err := testQueries.GetTeamsByProfile(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, teams)
 }

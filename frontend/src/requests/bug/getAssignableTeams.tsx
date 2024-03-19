@@ -3,7 +3,7 @@ import Team from "../../model/Team";
 import apiV1BaseUrl from "../api";
 import { TeamsResponse } from "../team/teamResponse";
 
-const getAssigneeTeams = async (orgId: string): Promise<TeamsResponse> => {
+const getAssignableTeams = async (orgId: string): Promise<TeamsResponse> => {
   const res = await fetch(apiV1BaseUrl + `/bug/organisation/${orgId}/teams`, {
     credentials: "include",
   });
@@ -13,4 +13,4 @@ const getAssigneeTeams = async (orgId: string): Promise<TeamsResponse> => {
   return { teams, error };
 };
 
-export default getAssigneeTeams;
+export default getAssignableTeams;

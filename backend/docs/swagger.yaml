@@ -2,25 +2,25 @@ basePath: /api/v1
 definitions:
   bug.bugOutput:
     properties:
-      assignedbyprofile:
+      assigned_by_profile:
         example: 00000000-0000-0000-0000-000000000000
         type: string
-      assignedbyteam:
+      assigned_by_team:
         example: 00000000-0000-0000-0000-000000000000
         type: string
-      assignedto:
+      assigned_to:
         example: 00000000-0000-0000-0000-000000000000
         type: string
-      closedat:
+      closed_at:
         example: "1710579130"
         type: string
-      closedby:
+      closed_by:
         example: 00000000-0000-0000-0000-000000000000
         type: string
       completed:
         example: false
         type: boolean
-      createdat:
+      created_at:
         example: "1710579130"
         type: string
       description:
@@ -43,7 +43,7 @@ definitions:
         allOf:
         - $ref: '#/definitions/db.Bugstatus'
         example: PENDING
-      updatedat:
+      updated_at:
         example: "1710579130"
         type: string
     type: object
@@ -655,7 +655,7 @@ paths:
       - bug
   /bug/organisation/{organisation-id}/teams:
     get:
-      description: Get organisations this profile is part of.
+      description: Get organisations this profile can assign bugs to within an organsiation.
       parameters:
       - description: Organisation ID
         in: path
@@ -683,7 +683,40 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/util.ErrorModel'
-      summary: Get organisations this profile is part of.
+      summary: Get organisations this profile can assign bugs to within an organsiation.
+      tags:
+      - bug
+  /bug/organisation/{organisation-id}/teams-by-profile:
+    get:
+      description: Get teams this profile is part of.
+      parameters:
+      - description: Organisation ID
+        in: path
+        name: organisation-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/bug.teamOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Get teams this profile is part of.
       tags:
       - bug
   /bug/organisations:

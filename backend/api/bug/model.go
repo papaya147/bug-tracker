@@ -21,15 +21,15 @@ type bugOutput struct {
 	Description       string         `json:"description" example:"Input validation is not working"`
 	Status            db.Bugstatus   `json:"status" example:"PENDING"`
 	Priority          db.Bugpriority `json:"priority" example:"URGENT"`
-	Assignedto        uuid.UUID      `json:"assignedto" example:"00000000-0000-0000-0000-000000000000"`
-	Assignedbyprofile uuid.UUID      `json:"assignedbyprofile" example:"00000000-0000-0000-0000-000000000000"`
-	Assignedbyteam    uuid.UUID      `json:"assignedbyteam" example:"00000000-0000-0000-0000-000000000000"`
+	Assignedto        uuid.UUID      `json:"assigned_to" example:"00000000-0000-0000-0000-000000000000"`
+	Assignedbyprofile uuid.UUID      `json:"assigned_by_profile" example:"00000000-0000-0000-0000-000000000000"`
+	Assignedbyteam    uuid.UUID      `json:"assigned_by_team" example:"00000000-0000-0000-0000-000000000000"`
 	Completed         bool           `json:"completed" example:"false"`
-	Createdat         time.Time      `json:"createdat" example:"1710579130"`
-	Updatedat         time.Time      `json:"updatedat" example:"1710579130"`
-	Closedby          *uuid.UUID     `json:"closedby" example:"00000000-0000-0000-0000-000000000000"`
+	Createdat         time.Time      `json:"created_at" example:"1710579130"`
+	Updatedat         time.Time      `json:"updated_at" example:"1710579130"`
+	Closedby          *uuid.UUID     `json:"closed_by" example:"00000000-0000-0000-0000-000000000000"`
 	Remarks           *string        `json:"remarks" example:"None"`
-	Closedat          *time.Time     `json:"closedat" example:"1710579130"`
+	Closedat          *time.Time     `json:"closed_at" example:"1710579130"`
 }
 
 type id struct {
