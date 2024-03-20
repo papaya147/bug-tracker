@@ -34,4 +34,9 @@ clean_run:
 	make test
 	go run main.go
 
+build:
+	docker image rm papaya147/buggy-backend || true
+	env GOOS=linux CGO_ENABLED=0 go build -o server-app main.go
+	docker build -t papaya147/buggy-backend:latest .
+
 .PHONY: test postgres createdb dropdb
