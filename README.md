@@ -1,0 +1,3 @@
+# Buggy
+
+Run `make run`
