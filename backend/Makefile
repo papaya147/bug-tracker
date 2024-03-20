@@ -39,4 +39,4 @@ build:
 	env GOOS=linux CGO_ENABLED=0 go build -o server-app main.go
 	docker build -t papaya147/buggy-backend:latest .
 
-.PHONY: test postgres createdb dropdb
+.PHONY: test postgres createdb dropdb build
