@@ -26,6 +26,7 @@ import BugHome from "./pages/bug/BugHome";
 import CreateBug from "./pages/bug/CreateBug";
 import TeamBugHome from "./pages/team/TeamBugHome";
 import UpdateBug from "./pages/bug/UpdateBug";
+import ResolveBug from "./pages/bug/ResolveBug";
 
 function App() {
   return (
@@ -105,6 +106,7 @@ const Root = () => {
           <Route path="/" element={<BugHome profile={profile} />} />
           <Route path="/bug/create" element={<CreateBug />} />
           <Route path="/bug/:id/update" element={<UpdateBug />} />
+          <Route path="/bug/:id/resolve" element={<ResolveBug />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

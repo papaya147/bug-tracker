@@ -20,7 +20,9 @@ const BugHome: React.FC<Props> = ({ profile }) => {
 
   return (
     <div>
-      <h2>Hey {profile?.name}, here are your bugs!</h2>
+      {bugs && bugs.length > 0 && (
+        <h2>Hey {profile?.name}, here are your bugs!</h2>
+      )}
       <Link to="/bug/create">Create a Bug!</Link>
       {bugs && <BugTable bugs={bugs} childOfAssigneeView={false} />}
     </div>

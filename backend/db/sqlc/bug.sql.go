@@ -140,7 +140,8 @@ FROM bug b
 WHERE tm.profile = $1
     AND completed = FALSE
 ORDER BY b.priority,
-    b.status
+    b.status,
+    b.createdAt
 `
 
 func (q *Queries) GetActiveBugsByAssignedProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
@@ -212,7 +213,8 @@ FROM bug
 WHERE assignedTo = $1
 ORDER BY priority,
     status,
-    completed DESC
+    completed,
+    createdAt
 `
 
 func (q *Queries) GetBugsByAssignedTeam(ctx context.Context, assignedto uuid.UUID) ([]Bug, error) {
@@ -258,7 +260,8 @@ FROM bug b
 WHERE tm.profile = $1
 ORDER BY b.priority,
     b.status,
-    b.completed
+    b.completed,
+    b.createdAt
 `
 
 func (q *Queries) GetBugsByAssigneeProfile(ctx context.Context, profile uuid.UUID) ([]Bug, error) {
@@ -302,7 +305,8 @@ FROM bug
 WHERE assignedByTeam = $1
 ORDER BY priority,
     status,
-    completed DESC
+    completed,
+    createdAt
 `
 
 func (q *Queries) GetBugsByAssigneeTeam(ctx context.Context, assignedbyteam uuid.UUID) ([]Bug, error) {

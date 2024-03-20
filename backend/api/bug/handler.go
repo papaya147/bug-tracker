@@ -38,6 +38,7 @@ func (handler *Handler) Routes() *chi.Mux {
 		r.Get("/organisation/{organisation-id}/teams", handler.getOrganisationTeams)
 		r.Get("/organisation/{organisation-id}/teams-by-profile", handler.getOrganisationTeamsByProfile)
 		r.Get("/by-assignee-team/{team-id}", handler.getByAssigneeTeam)
+		r.Post("/close", handler.close)
 	})
 
 	return router

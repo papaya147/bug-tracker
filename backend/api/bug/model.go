@@ -60,3 +60,8 @@ type teamOutput struct {
 	CreatedAt   int64     `json:"created_at" example:"1710579130"`
 	UpdatedAt   int64     `json:"updated_at" example:"1710579130"`
 }
+
+type closeBugInput struct {
+	Id      uuid.UUID `json:"id" validate:"required" example:"6ba7b810-9dad-11d1-80b4-00c04fd430c8"`
+	Remarks string    `json:"remarks" validate:"required,max=200" example:"This bug is done."`
+}

@@ -202,6 +202,58 @@
                 }
             }
         },
+        "/bug/close": {
+            "post": {
+                "description": "Close a bug, the profile closing the bug must be a part of the assigned team.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bug"
+                ],
+                "summary": "Close a bug.",
+                "parameters": [
+                    {
+                        "description": "json",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bug.closeBugInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/bug.bugOutput"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/util.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/bug/organisation/{organisation-id}/teams": {
             "get": {
                 "description": "Get organisations this profile can assign bugs to within an organsiation.",
@@ -1397,6 +1449,24 @@
                 "updated_at": {
                     "type": "string",
                     "example": "1710579130"
+                }
+            }
+        },
+        "bug.closeBugInput": {
+            "type": "object",
+            "required": [
+                "id",
+                "remarks"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+                },
+                "remarks": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "example": "This bug is done."
                 }
             }
         },

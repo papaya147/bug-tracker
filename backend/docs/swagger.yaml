@@ -47,6 +47,19 @@ definitions:
         example: "1710579130"
         type: string
     type: object
+  bug.closeBugInput:
+    properties:
+      id:
+        example: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+        type: string
+      remarks:
+        example: This bug is done.
+        maxLength: 200
+        type: string
+    required:
+    - id
+    - remarks
+    type: object
   bug.createBugInput:
     properties:
       assigned_team:
@@ -684,6 +697,41 @@ paths:
           schema:
             $ref: '#/definitions/util.ErrorModel'
       summary: Get bugs assigned by this team.
+      tags:
+      - bug
+  /bug/close:
+    post:
+      consumes:
+      - application/json
+      description: Close a bug, the profile closing the bug must be a part of the
+        assigned team.
+      parameters:
+      - description: json
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/bug.closeBugInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/bug.bugOutput'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/util.ErrorModel'
+      summary: Close a bug.
       tags:
       - bug
   /bug/organisation/{organisation-id}/teams:

@@ -22,7 +22,8 @@ FROM bug b
 WHERE tm.profile = $1
     AND completed = FALSE
 ORDER BY b.priority,
-    b.status;
+    b.status,
+    b.createdAt;
 -- name: GetBugsByAssigneeProfile :many
 SELECT b.*
 FROM bug b
@@ -31,21 +32,24 @@ FROM bug b
 WHERE tm.profile = $1
 ORDER BY b.priority,
     b.status,
-    b.completed;
+    b.completed,
+    b.createdAt;
 -- name: GetBugsByAssignedTeam :many
 SELECT *
 FROM bug
 WHERE assignedTo = $1
 ORDER BY priority,
     status,
-    completed DESC;
+    completed,
+    createdAt;
 -- name: GetBugsByAssigneeTeam :many
 SELECT *
 FROM bug
 WHERE assignedByTeam = $1
 ORDER BY priority,
     status,
-    completed DESC;
+    completed,
+    createdAt;
 -- name: CloseBug :one
 UPDATE bug
 SET completed = TRUE,
