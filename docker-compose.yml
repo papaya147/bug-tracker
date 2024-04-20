@@ -12,7 +12,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: telemetry
+      POSTGRES_DB: buggy
     volumes:
       - ./backend/postgres/:/var/lib/postgresql/data/
 

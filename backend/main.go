@@ -25,12 +25,11 @@ func main() {
 	postgresConn := util.CreatePostgresPool(config.POSTGRES_DSN)
 	defer postgresConn.Close()
 
-	util.CreateDatabase(postgresConn)
 	util.CreateCookieStore(config)
 
 	log.Print("attempting database migration...")
 	if err := runDbMigration(config); err != nil {
-		log.Println("database migration failed with error:", err)
+		log.Fatal("database migration failed with error:", err)
 	} else {
 		log.Println("database migration was successful!")
 	}

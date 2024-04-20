@@ -1,8 +1,6 @@
 package util
 
 import (
-	"net/http"
-
 	"github.com/gorilla/sessions"
 )
 
@@ -15,7 +13,6 @@ func CreateCookieStore(config Config) {
 		Domain:   "*",
 		MaxAge:   86400 * 30,
 		HttpOnly: true,
-		SameSite: http.SameSiteNoneMode,
 		// TODO - uncomment this in production
 		// Secure:   true,
 	}
